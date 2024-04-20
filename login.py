@@ -5,7 +5,7 @@ import sys
 import time
 
 import requests
-from tool import qr_encode
+from tool import qr_encode, urldata_dict
 
 debug = True
 debug_num = 0
@@ -71,15 +71,16 @@ print_debug(generate())
 
 
 def poll(qrcode_key: str):
-    api = 'https://passport.bilibili.com/x/passport-login/web/qrcode/poll'
+    api = f'https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key={qrcode_key}'
     try:
-        DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct = requests.get(api, headers=headers).json()
+        DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct = requests.get(api, data=qrcode_key, headers=headers).json()
         print_debug(DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct)
         data = DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct['data']
-        DedeUserID = ''
-        DedeUserID__ckMd5 = ''
-        SESSDATA = ''
-        bili_jct = ''
+        data_dict = urldata_dict(data['url'])
+        DedeUserID = data_dict['DedeUserID']
+        DedeUserID__ckMd5 = data_dict['DedeUserID__ckMd5']
+        SESSDATA = data_dict['SESSDATA']
+        bili_jct = data_dict['bili_jct']
     except:
         DedeUserID = ''
         DedeUserID__ckMd5 = ''

@@ -5,7 +5,7 @@ from io import StringIO
 
 import qrcode
 
-debug = True
+debug = 0
 debug_num = 0
 
 
@@ -61,3 +61,16 @@ def qr_encode(str: str, border: int = 2, invert: bool = False) -> str:
 
 print_debug(qr_encode('https://txz.qq.com/p?k=EDDit-xHaBeBrZmB0ZSiWYvp1OgI2loq&f=1600001602'))
 
+
+def urldata_dict(url: str) -> dict:
+    urldata = url.split('?',1)[1]
+    data_list = urldata.split('&')
+    data_dict = {}
+    for data in data_list:
+        data = data.split('=')
+        data_dict[data[0]] = data[1]
+    return data_dict
+
+
+
+print_debug(urldata_dict('https://passport.biligame.com/x/passport-login/web/crossDomain?DedeUserID=143474500&DedeUserID__ckMd5=7d59d5cc4d178400&Expires=1729193932&SESSDATA=3d5dd2c2,1729193932,b1217*41CjArtWqP5q3E5GigFZnLjLkswOq3mkL9C1pRtD_p_eBBRb_7oC0t-46HstTY3SfRlhQSVnNHQWFpWDFQZ0F3OHpWWE5XZmg2MXhSZXBvZng1UlFIX3lFQ28yRW4wbkotbGo2OFZPVHdsSWsxNVpUakJPUzR6OGNPMnotT0dpRDg5bDdPb3FzNkR3IIEC&bili_jct=2a9a95c3a7b2d39230b783a7c5e7eb49&gourl=https%3A%2F%2Fwww.bilibili.com&first_domain=.bilibili.com'))
