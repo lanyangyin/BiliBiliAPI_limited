@@ -1,32 +1,47 @@
 # coding=utf-8
 import json
+import sys
+import time
 
 import requests
 
 debug = True
-debugnum = 0
+debug_num = 0
+
 
 def print_debug(content, _:bool = debug):
-    global debugnum
-    debugnum = debugnum + 1
+    global debug_num
+    debug_num = debug_num + 1
     if _:
-        print(debugnum, content)
+        print(debug_num, content)
+
 
 def update_config(uid:int, cookie:str):
-    global debugnum
-    debugnum = 0
-    with open('config.json', 'r', encoding='utf-8') as f:
-        try:
+    global debug_num
+    debug_num = 0
+    try:
+        with open('config.json', 'r', encoding='utf-8') as f:
             config = json.load(f)
-            print_debug(config)
+            inputconfig = config
+            print_debug(inputconfig)
             config[str(uid)] = cookie
-            print_debug(config)
-        except:
-            config = dict()
-            config[str(uid)] = cookie
-    print_debug(config)
+            outputconfig = config
+            print_debug(outputconfig)
+            inconfig_isjson = True
+    except:
+        with open('config.json', 'r', encoding='utf-8') as f:
+            inputconfig = f.read()
+            outputconfig = dict()
+            outputconfig[str(uid)] = cookie
+            inconfig_isjson = False
+            print_debug(inputconfig)
+    if not inconfig_isjson:
+        with open(str(time.strftime("%Y%m%d%H%M%S")) + '_config.json', 'w', encoding='utf-8') as f:
+            f.write(inputconfig)
+            print_debug(inputconfig)
     with open('config.json', 'w', encoding='utf-8') as f:
-        json.dump(config, f, ensure_ascii=False, indent=4)
-    print_debug(config)
+        json.dump(outputconfig, f, ensure_ascii=False, indent=4)
+    print_debug(outputconfig)
+
 
 update_config(1, "")
