@@ -5,6 +5,7 @@ import sys
 import time
 
 import requests
+from tool import qr_encode
 
 debug = True
 debug_num = 0
@@ -86,6 +87,19 @@ def poll(qrcode_key: str):
         bili_jct = ''
     return {'DedeUserID': DedeUserID, 'DedeUserID__ckMd5': DedeUserID__ckMd5, 'SESSDATA': SESSDATA, 'csrf': bili_jct}
 
+
 print_debug(poll(generate()['qrcode_key']))
 
 
+
+def test():
+    url8qrcode_key = generate()
+    url = url8qrcode_key['url']
+    print(url)
+    qrcode_key = url8qrcode_key['qrcode_key']
+    print(qr_encode(url))
+    while True:
+        print(poll(qrcode_key))
+
+
+test()
