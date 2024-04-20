@@ -1,4 +1,5 @@
 # coding=utf-8
+# 只能二维码
 import json
 import sys
 import time
@@ -7,16 +8,20 @@ import requests
 
 debug = True
 debug_num = 0
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
+    (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0",
+}
 
 
-def print_debug(content, _:bool = debug):
+def print_debug(content, _: bool = debug):
     global debug_num
     debug_num = debug_num + 1
     if _:
         print(debug_num, content)
 
 
-def update_config(uid:int, cookie:str):
+def update_config(uid: int, cookie: str):
     global debug_num
     debug_num = 0
     try:
@@ -44,4 +49,43 @@ def update_config(uid:int, cookie:str):
     print_debug(outputconfig)
 
 
-update_config(1, "")
+print_debug(update_config(1, ""))
+
+
+def generate():
+    api = 'https://passport.bilibili.com/x/passport-login/web/qrcode/generate'
+    try:
+        url8qrcode_key = requests.get(api, headers=headers).json()
+        print_debug(url8qrcode_key)
+        data = url8qrcode_key['data']
+        url = data['url']
+        qrcode_key = data['qrcode_key']
+    except:
+        url = ""
+        qrcode_key = ""
+    return {'url': url, 'qrcode_key': qrcode_key}
+
+
+print_debug(generate())
+
+
+def poll(qrcode_key: str):
+    api = 'https://passport.bilibili.com/x/passport-login/web/qrcode/poll'
+    try:
+        DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct = requests.get(api, headers=headers).json()
+        print_debug(DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct)
+        data = DedeUserID8DedeUserID__ckMd58SESSDATA8bili_jct['data']
+        DedeUserID = ''
+        DedeUserID__ckMd5 = ''
+        SESSDATA = ''
+        bili_jct = ''
+    except:
+        DedeUserID = ''
+        DedeUserID__ckMd5 = ''
+        SESSDATA = ''
+        bili_jct = ''
+    return {'DedeUserID': DedeUserID, 'DedeUserID__ckMd5': DedeUserID__ckMd5, 'SESSDATA': SESSDATA, 'csrf': bili_jct}
+
+print_debug(poll(generate()['qrcode_key']))
+
+

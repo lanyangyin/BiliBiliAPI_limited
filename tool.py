@@ -1,5 +1,9 @@
 # coding=utf-8
+import sys
 import time
+from io import StringIO
+
+import qrcode
 
 debug = True
 debug_num = 0
@@ -37,3 +41,21 @@ def time_format(t: float) -> str:
 
 print_debug(time_encode("2024-03-21 17:53:24"))
 print_debug(time_format(time_encode("2024-03-21 17:53:24")))
+
+
+def qr_encode(str: str, border: int = 1, invert: bool = False) -> str:
+    # 创建一个空的StringIO对象
+    output = StringIO()
+    qr = qrcode.QRCode()
+    qr.border = border
+    qr.add_data(str)
+    qr.make()
+    qr.print_ascii(out=None, tty=False, invert=invert)
+    # 将标准输出重定向到StringIO对象
+    sys.stdout = output
+    result = output.getvalue()
+    return result
+
+
+print_debug(qr_encode('https://txz.qq.com/p?k=EDDit-xHaBeBrZmB0ZSiWYvp1OgI2loq&f=1600001602'))
+
