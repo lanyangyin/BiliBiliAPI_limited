@@ -6,7 +6,7 @@ from urllib.parse import quote, unquote
 
 import qrcode
 
-debug = True
+debug = False
 debug_num = 0
 
 

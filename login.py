@@ -129,5 +129,5 @@ def get_buvid3(bvid: str = 'BV16F411c7CR') -> dict:
 
 
 
-print_debug(get_buvid3(), _=True)
+print_debug(get_buvid3())
 
