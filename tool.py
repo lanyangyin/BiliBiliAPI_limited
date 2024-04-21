@@ -1,4 +1,6 @@
 # coding=utf-8
+import json
+import os
 import sys
 import time
 from io import StringIO
@@ -15,6 +17,51 @@ def print_debug(content, _: bool = debug):
     debug_num = debug_num + 1
     if _:
         print(debug_num, content)
+
+
+def update_config(uid: int, cookie: str, dirname: str = 'Biliconfig'):
+    """
+    记录uid和cookie到json文件中
+    :param uid:
+    :param cookie:
+    :param dirname: 文件所在文件夹
+    """
+    os.makedirs(f'.\\{dirname}')
+    configpath = f'.\\{dirname}\\config.json'
+    try:
+        with open(configpath, 'r', encoding='utf-8') as f:
+            f.read()
+    except:
+        with open(configpath, 'w', encoding='utf-8') as f:
+            f.write(json.dumps({}, ensure_ascii=False))
+    global debug_num
+    debug_num = 0
+    try:
+        with open(configpath, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+            inputconfig = config
+            print_debug(inputconfig)
+            config[str(uid)] = cookie
+            outputconfig = config
+            print_debug(outputconfig)
+            inconfig_isjson = True
+    except:
+        with open(configpath, 'r', encoding='utf-8') as f:
+            inputconfig = f.read()
+            outputconfig = dict()
+            outputconfig[str(uid)] = cookie
+            inconfig_isjson = False
+            print_debug(inputconfig)
+    if not inconfig_isjson:
+        with open(str(time.strftime("%Y%m%d%H%M%S")) + '_config.json', 'w', encoding='utf-8') as f:
+            f.write(inputconfig)
+            print_debug(inputconfig)
+    with open(configpath, 'w', encoding='utf-8') as f:
+        json.dump(outputconfig, f, ensure_ascii=False, indent=4)
+    print_debug(outputconfig)
+
+
+print_debug(update_config(1, ""))
 
 
 def time_encode(dt) -> float:
