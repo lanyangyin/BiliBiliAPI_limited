@@ -64,6 +64,11 @@ print_debug(qr_encode('https://txz.qq.com/p?k=EDDit-xHaBeBrZmB0ZSiWYvp1OgI2loq&f
 
 
 def urldata_dict(url: str) -> dict:
+    """
+    将url参数转换成dict
+    :param url: 带有参数的url
+    :return: 转换成的dict
+    """
     urldata = url.split('?',1)[1]
     data_list = urldata.split('&')
     data_dict = {}

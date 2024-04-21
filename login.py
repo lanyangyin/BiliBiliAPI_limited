@@ -1,6 +1,7 @@
 # coding=utf-8
 # 只能二维码登录
 import json
+import os
 import re
 import time
 
@@ -8,7 +9,7 @@ import requests
 
 from tool import urldata_dict
 
-debug = False
+debug = True
 debug_num = 0
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
@@ -23,11 +24,27 @@ def print_debug(content, _: bool = debug):
         print(debug_num, content)
 
 
-def update_config(uid: int, cookie: str):
+def update_config(uid: int, cookie: str, dirname: str = ''):
+    """
+    记录uid和cookie到json文件中
+    :param uid:
+    :param cookie:
+    :param dirname: 文件所在文件夹
+    """
+    if dirname == '':
+        dirname = 'Biliconfig'
+    os.makedirs(f'.\\{dirname}')
+    configpath = f'.\\{dirname}\\config.json'
+    try:
+        with open(configpath, 'r', encoding='utf-8') as f:
+            f.read()
+    except:
+        with open(configpath, 'w', encoding='utf-8') as f:
+            f.write(json.dumps({}, ensure_ascii=False))
     global debug_num
     debug_num = 0
     try:
-        with open('config.json', 'r', encoding='utf-8') as f:
+        with open(configpath, 'r', encoding='utf-8') as f:
             config = json.load(f)
             inputconfig = config
             print_debug(inputconfig)
@@ -36,7 +53,7 @@ def update_config(uid: int, cookie: str):
             print_debug(outputconfig)
             inconfig_isjson = True
     except:
-        with open('config.json', 'r', encoding='utf-8') as f:
+        with open(configpath, 'r', encoding='utf-8') as f:
             inputconfig = f.read()
             outputconfig = dict()
             outputconfig[str(uid)] = cookie
@@ -46,7 +63,7 @@ def update_config(uid: int, cookie: str):
         with open(str(time.strftime("%Y%m%d%H%M%S")) + '_config.json', 'w', encoding='utf-8') as f:
             f.write(inputconfig)
             print_debug(inputconfig)
-    with open('config.json', 'w', encoding='utf-8') as f:
+    with open(configpath, 'w', encoding='utf-8') as f:
         json.dump(outputconfig, f, ensure_ascii=False, indent=4)
     print_debug(outputconfig)
 
