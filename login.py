@@ -1,6 +1,8 @@
 # coding=utf-8
 # 只能二维码
 import json
+import pprint
+import re
 import sys
 import time
 
@@ -53,7 +55,7 @@ def update_config(uid: int, cookie: str):
 print_debug(update_config(1, ""))
 
 
-def generate():
+def generate() -> dict:
     """
     申请二维码
     https://passport.bilibili.com/x/passport-login/web/qrcode/generate
@@ -75,7 +77,7 @@ def generate():
 print_debug(generate())
 
 
-def poll(qrcode_key: str):
+def poll(qrcode_key: str) -> dict:
     """
     登陆状态
     https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key={qrcode_key}
@@ -107,4 +109,26 @@ def poll(qrcode_key: str):
 
 
 print_debug(poll(generate()['qrcode_key']))
+
+
+def get_buvid3(bvid: str = 'BV16F411c7CR') -> dict:
+    """
+    通过视频BV号获取cookie部分参数
+    :param bvid: BV号
+    :return:  {'cookies': cookies, 'data_dict': data_dict, 'session': sessionId}
+    """
+    response = requests.get(f'https://www.bilibili.com/video/{bvid}/', headers=headers)
+    cookies = response.cookies.get_dict()
+    data_list = re.findall(r'__INITIAL_STATE__=(.+);\(function', response.text)  # .表示除换行符所有字符，+ 表示一个或者多个
+    try:
+        data_dict = json.loads(data_list[0])  # 结果长得像字典， 就用python中反序列化转成json格式
+        sessionId = re.findall(r'session":"(.+)"}</script', response.text)[0]
+    except:
+        data_dict = ''
+        sessionId = ''
+    return {'cookies': cookies, 'data_dict': data_dict, 'session': sessionId}
+
+
+
+print_debug(get_buvid3(), _=True)
 

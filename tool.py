@@ -1,12 +1,16 @@
 # coding=utf-8
+import json
+import pprint
+import re
 import sys
 import time
 from io import StringIO
 from urllib.parse import quote, unquote
 
 import qrcode
+import requests
 
-debug = False
+debug = True
 debug_num = 0
 
 
@@ -44,13 +48,13 @@ print_debug(time_encode("2024-03-21 17:53:24"))
 print_debug(time_format(time_encode("2024-03-21 17:53:24")))
 
 
-def qr_encode(str: str, border: int = 2, invert: bool = False) -> str:
+def qr_encode(qr_str: str, border: int = 2, invert: bool = False) -> str:
     # 创建一个 StringIO 对象来捕获 print 输出
     output = StringIO()
     sys.stdout = output
     qr = qrcode.QRCode()
     qr.border = border
-    qr.add_data(str)
+    qr.add_data(qr_str)
     qr.make()
     qr.print_ascii(out=None, tty=False, invert=invert)
     # 重定向输出到变量中
@@ -100,3 +104,5 @@ def url_encoded(encoded_string):
 
 
 print_debug(url_encoded("DedeUserID=143474500&DedeUserID__ckMd5=7d59d5cc4d178400&Expires=1729193932&SESSDATA=3d5dd2c2,1729193932,b1217*41CjArtWqP5q3E5GigFZnLjLkswOq3mkL9C1pRtD_p_eBBRb_7oC0t-46HstTY3SfRlhQSVnNHQWFpWDFQZ0F3OHpWWE5XZmg2MXhSZXBvZng1UlFIX3lFQ28yRW4wbkotbGo2OFZPVHdsSWsxNVpUakJPUzR6OGNPMnotT0dpRDg5bDdPb3FzNkR3IIEC&bili_jct=2a9a95c3a7b2d39230b783a7c5e7eb49&gourl=https%3A%2F%2Fwww.bilibili.com&first_domain=.bilibili.com',"))
+
+
