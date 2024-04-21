@@ -1,13 +1,12 @@
 # coding=utf-8
-# 只能二维码
+# 只能二维码登录
 import json
-import pprint
 import re
-import sys
 import time
 
 import requests
-from tool import qr_encode, urldata_dict
+
+from tool import urldata_dict
 
 debug = False
 debug_num = 0

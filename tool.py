@@ -1,14 +1,10 @@
 # coding=utf-8
-import json
-import pprint
-import re
 import sys
 import time
 from io import StringIO
 from urllib.parse import quote, unquote
 
 import qrcode
-import requests
 
 debug = True
 debug_num = 0
