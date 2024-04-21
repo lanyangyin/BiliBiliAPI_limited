@@ -9,7 +9,7 @@ import requests
 
 from tool import urldata_dict
 
-debug = True
+debug = False
 debug_num = 0
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
