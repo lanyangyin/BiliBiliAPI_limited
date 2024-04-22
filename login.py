@@ -7,7 +7,7 @@ import time
 
 import requests
 
-from tool import urldata_dict
+from .tool import urldata_dict, print_debug
 
 debug = False
 debug_num = 0
@@ -15,13 +15,6 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
     (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0",
 }
-
-
-def print_debug(content, _: bool = debug):
-    global debug_num
-    debug_num = debug_num + 1
-    if _:
-        print(debug_num, content)
 
 
 def generate() -> dict:
@@ -43,7 +36,7 @@ def generate() -> dict:
     return {'url': url, 'qrcode_key': qrcode_key}
 
 
-print_debug(generate())
+# print_debug(generate())
 
 
 def poll(qrcode_key: str) -> dict:
@@ -77,7 +70,7 @@ def poll(qrcode_key: str) -> dict:
     return {'code': code, 'cookies': {'DedeUserID': DedeUserID, 'DedeUserID__ckMd5': DedeUserID__ckMd5, 'SESSDATA': SESSDATA, 'csrf': bili_jct}}
 
 
-print_debug(poll(generate()['qrcode_key']))
+# print_debug(poll(generate()['qrcode_key']))
 
 
 def get_buvid3(bvid: str = 'BV16F411c7CR') -> dict:
@@ -99,5 +92,5 @@ def get_buvid3(bvid: str = 'BV16F411c7CR') -> dict:
 
 
 
-print_debug(get_buvid3())
+# print_debug(get_buvid3())
 
