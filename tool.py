@@ -1,7 +1,6 @@
 # coding=utf-8
 import json
 import os
-import pprint
 import sys
 import time
 from io import StringIO
@@ -9,7 +8,7 @@ from urllib.parse import quote, unquote
 
 import qrcode
 
-debug = False
+debug = 1
 debug_num = 0
 
 
@@ -17,7 +16,7 @@ def print_debug(content, _: bool = debug):
     global debug_num
     debug_num = debug_num + 1
     if _:
-        pprint.pprint(debug_num, content)
+        print(debug_num, content)
 
 
 def update_config(uid: int, cookie: str, dirname: str = 'Biliconfig'):
@@ -114,7 +113,7 @@ def time_format(t: float) -> str:
 
 
 # print_debug(time_encode("2024-03-21 17:53:24"))
-# print_debug(time_format(time_encode("2024-03-21 17:53:24")))
+# print_debug(time_format(1714072323))
 
 
 def qr_encode(qr_str: str, border: int = 2, invert: bool = False) -> str:
@@ -174,7 +173,7 @@ def url_decoded(url_string):
     return utf8_encoded
 
 
-def url_encoded(encoded_string):
+def url_encoded(encoded_string: str):
     """
     将URL编码转换为 UTF-8 编码字符串
     :param encoded_string: 要编码的字符串
@@ -209,3 +208,31 @@ def dict2cookieformat(jsondict: dict) -> str:
     return cookie
 
 # print_debug(dict2cookieformat({'0': '9&0', "8": 8}))
+
+
+def html_decoded(htmlstr: str):
+    """
+    将UTF-8字符串转义为HTML实体字符
+    :param htmlstr:
+    :return:
+    """
+    import html
+    # 要转义的字符串
+    utf8_string = "这是一个包含特殊字符的字符串：& < > ' \""
+    # 将UTF-8字符串转义为HTML实体字符
+    escaped_string = html.escape(utf8_string, quote=True)
+    return escaped_string
+
+
+def html_encoded(encoded_string: str):
+    """
+    将HTML实体字符解码为UTF-8字符串
+    :param encoded_string:
+    :return:
+    """
+    import html
+    # 包含HTML实体字符的字符串
+    html_entities_string = "这是一个包含HTML实体字符的字符串：&amp; &lt; &gt; &#x27; &quot;"
+    # 将HTML实体字符解码为UTF-8字符串
+    decoded_string = html.unescape(html_entities_string)
+    return decoded_string
