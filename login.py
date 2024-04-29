@@ -7,7 +7,7 @@ import time
 
 import requests
 
-from .tool import urldata_dict, print_debug
+from tool import urldata_dict, print_debug
 
 debug = False
 debug_num = 0

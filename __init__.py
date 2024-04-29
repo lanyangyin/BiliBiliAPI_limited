@@ -1,6 +1,6 @@
 # coding=utf-8
-from .tool import check_config, qr_encode, update_config, dict2cookieformat
-from .login import generate, poll, get_buvid3
+from tool import check_config, qr_encode, update_config, dict2cookieformat
+from login import generate, poll, get_buvid3
 
 
 def start_login(usernum: int = 0):
@@ -41,4 +41,4 @@ def start_login(usernum: int = 0):
     return dict2cookieformat(cookies)
 
 
-
+print(start_login())
