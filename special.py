@@ -23,7 +23,7 @@ def getFansMembersRank(uid: int) -> list:
     """
     api = "https://api.live.bilibili.com/xlive/general-interface/v1/rank/getFansMembersRank"
     page = 0
-    maxpage = 1
+    # maxpage = 1
     RankFans = []
     FansMember = True
     while FansMember:
