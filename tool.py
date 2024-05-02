@@ -66,7 +66,7 @@ class config_B:
     def check(self) -> dict:
         """
         查询配置文件中保存的 uid 对应的 cookies，没有则为空字符
-        @return: uid 对应的 cookies
+        @return: uid 对应的 cookies ，uid 不存在会返回{}
         """
         cookies = {}
         try:
