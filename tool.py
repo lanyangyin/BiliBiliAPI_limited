@@ -13,15 +13,12 @@ from urllib.parse import quote, unquote
 import qrcode
 from qrcode.image.pil import PilImage
 
-# 配置文件 config.json 所在 默认文件夹名
-DefaultFolder = "Bili_config"
-
 
 class config_B:
     """
     配置文件 config.json 的 查找 和 更新
     """
-    def __init__(self, uid: int, dirname: str = DefaultFolder):
+    def __init__(self, uid: int, dirname: str = "Bili_config"):
         """
         @param uid: 用户id
         @param dirname: 配置文件 config.json 所在文件夹名
