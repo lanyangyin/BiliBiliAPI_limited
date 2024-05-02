@@ -68,13 +68,13 @@ class config_B:
         查询配置文件中保存的 uid 对应的 cookies，没有则为空字符
         @return: uid 对应的 cookies
         """
-        cookie = {}
+        cookies = {}
         try:
             with open(self.configpath, 'r', encoding='utf-8') as f:
-                cookie = json.load(f)[self.uid]
+                cookies = json.load(f)[self.uid]
         except:
             pass
-        return cookie
+        return cookies
 
 
 def time_encode(dt) -> float:
