@@ -18,6 +18,7 @@ class config_B:
     """
     配置文件 config.json 的 查找 和 更新
     """
+
     def __init__(self, uid: int, dirname: str = "Bili_config"):
         """
         @param uid: 用户id
@@ -253,9 +254,3 @@ def file2b64(filepath: str):
         src = base64_str.decode('utf-8')
         # print(src)
         return src
-
-
-
-
-
-
