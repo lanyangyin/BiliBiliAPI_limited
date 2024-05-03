@@ -18,7 +18,8 @@ def start_login(uid: int):
     else:
         url8qrcode_key = generate()
         url = url8qrcode_key['url']
-        print(qr_encode(url)["str"])
+        qr = qr_encode(url)
+        print(qr["str"])
         qrcode_key = url8qrcode_key['qrcode_key']
         code = poll(qrcode_key)['code']
         print(code)
