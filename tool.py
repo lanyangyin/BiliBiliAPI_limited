@@ -272,9 +272,3 @@ def creatfile(filepath: str, data: str = "file"):
         else:
             with open(filepath, 'w', encoding='utf-8') as f:
                 f.write('')
-
-
-
-
-
-
