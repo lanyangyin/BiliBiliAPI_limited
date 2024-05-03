@@ -12,7 +12,7 @@ def start_login(uid: int):
     """
     configb = config_B(uid=uid, dirname="Biliconfig")
     cookies = configb.check()
-    islogin = master(cookies).interface_nav()["isLogin"]
+    islogin = master(dict2cookieformat(cookies)).interface_nav()["isLogin"]
     if islogin:
         return dict2cookieformat(cookies)
     else:
