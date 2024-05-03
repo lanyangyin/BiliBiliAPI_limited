@@ -40,4 +40,4 @@ def start_login(uid: int):
     return dict2cookieformat(cookies)
 
 
-print(start_login(0))
+# print(start_login(0))
