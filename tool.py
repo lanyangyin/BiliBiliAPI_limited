@@ -254,3 +254,27 @@ def file2b64(filepath: str):
         src = base64_str.decode('utf-8')
         # print(src)
         return src
+
+
+def creatfile(filepath: str, data: str = "file"):
+    """
+    文件不存在时创建
+    @param filepath: 文件路径
+    @param data: 是 "config" 时生成空json内容
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            f.read()
+    except:
+        if data == "json":
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump({}, f, ensure_ascii=False, indent=4)
+        else:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write('')
+
+
+
+
+
+
