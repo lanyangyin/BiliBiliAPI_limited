@@ -5,11 +5,9 @@ import time
 
 import requests
 
-from tool import dict2cookieformat
-
 
 class master:
-    def __init__(self, cookies: dict,
+    def __init__(self, cookie: str,
                  UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
         """
         完善 浏览器headers
@@ -18,7 +16,7 @@ class master:
         """
         self.headers = {
             "User-Agent": UA,
-            "cookie": dict2cookieformat(cookies),
+            "cookie": cookie,
         }
 
     def getFansMembersRank(self, uid: int) -> list:
