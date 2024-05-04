@@ -97,7 +97,7 @@ def getRoomInfoOld(mid: int) -> dict:
     return RoomInfoOld["data"]
 
 
-pprint.pprint(getRoomInfoOld(67141))
+# pprint.pprint(getRoomInfoOld(67141))
 
 
 def v1_Room_get_info(room_id: int) -> dict:
@@ -350,7 +350,7 @@ def v1_Room_get_info(room_id: int) -> dict:
     return v1_Room_info["data"]
 
 
-pprint.pprint(v1_Room_get_info(213))
+# pprint.pprint(v1_Room_get_info(213))
 
 
 
