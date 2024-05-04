@@ -38,7 +38,7 @@ def getRoomInfoOld(mid: int) -> dict:
             <td>0：未轮播<br>1：轮播</td>
         </tr>
         <tr>
-            <td>live_status</td>
+            <td>liveStatus</td>
             <td>num</td>
             <td>直播状态</td>
             <td>0：未开播<br>1：直播中</td>
