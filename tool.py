@@ -294,7 +294,7 @@ def wbi(data: dict):
     ]
 
     def getMixinKey(orig: str):
-        '对 imgKey 和 subKey 进行字符顺序打乱编码'
+        """对 imgKey 和 subKey 进行字符顺序打乱编码"""
         return reduce(lambda s, i: s + orig[i], mixinKeyEncTab, '')[:32]
 
     def encWbi(params: dict, img_key: str, sub_key: str):
@@ -315,7 +315,7 @@ def wbi(data: dict):
         return params
 
     def getWbiKeys() -> tuple[str, str]:
-        '获取最新的 img_key 和 sub_key'
+        """获取最新的 img_key 和 sub_key"""
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
         }
