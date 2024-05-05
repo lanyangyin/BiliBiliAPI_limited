@@ -298,7 +298,7 @@ def wbi(data: dict):
         return reduce(lambda s, i: s + orig[i], mixinKeyEncTab, '')[:32]
 
     def encWbi(params: dict, img_key: str, sub_key: str):
-        '为请求参数进行 wbi 签名'
+        """为请求参数进行 wbi 签名"""
         mixin_key = getMixinKey(img_key + sub_key)
         curr_time = round(time.time())
         params['wts'] = curr_time  # 添加 wts 字段
