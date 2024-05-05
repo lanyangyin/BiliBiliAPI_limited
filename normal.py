@@ -352,16 +352,56 @@ def v1_Room_get_info(room_id: int) -> dict:
 
 # pprint.pprint(v1_Room_get_info(213))
 
+def v2_index_getRoomPlayInfo(room_id: int):
+    """
+    直播间获取到的，不知道是啥
+    @param room_id:
+    @return:
+    "data": {
+        "room_id": 22966160,
+        "short_id": 0,
+        "uid": 1703797642,
+        "is_hidden": false,
+        "is_locked": false,
+        "is_portrait": false,
+        "live_status": 0,
+        "hidden_till": 0,
+        "lock_till": 0,
+        "encrypted": false,
+        "pwd_verified": true,
+        "live_time": 0,
+        "room_shield": 0,
+        "all_special_types": [],
+        "playurl_info": null,
+        "official_type": 0,
+        "official_room_id": 0,
+        "risk_with_delay": 0
+    }
+    @rtype: dict
+    """
+    api = "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo"
+    data = {
+        "room_id": room_id,
+    }
+    RoomPlayInfo = requests.get(api, headers=headers, params=data).json()
+    return RoomPlayInfo["data"]
 
 
+# pprint.pprint(v2_index_getRoomPlayInfo(room_id=213))
+def finger_spi():
+    """
+    不知道是啥，有点像 buvid3
+    @return:
+    "data": {
+    'b_3': '6B3DAAB1-0715-00DE-EFD0-528483AA2A0E08946infoc',
+    'b_4': 'FD202488-5C2B-0BC8-6BF9-6023C4B59C5708946-024050510-sdKnSN59x4BTPH9pWZcWMg=='
+    }
+
+    @rtype: dict
+    """
+    api = "https://api.bilibili.com/x/frontend/finger/spi"
+    RoomPlayInfo = requests.get(api, headers=headers).json()
+    return RoomPlayInfo["data"]
 
 
-
-
-
-
-
-
-
-
-
+# pprint.pprint(finger_spi())

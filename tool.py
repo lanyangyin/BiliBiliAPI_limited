@@ -103,7 +103,7 @@ def time_format(t: float) -> str:
 
 
 # print(time_encode("2024-03-21 17:53:24"))
-# print(time_format(1714072323))
+# print(time_format(1714660247))
 
 
 def qr_encode(qr_str: str, border: int = 2, invert: bool = False):
@@ -284,7 +284,9 @@ def creatfile(filepath: str, data: str = "file"):
 def wbi(data: dict):
     """
     WBI 签名
+    @param data: 需要 wbi签名 的 params 参数
     @return: requests的 params 参数
+    @rtype: dict
     """
     mixinKeyEncTab = [
         46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49,

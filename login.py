@@ -73,6 +73,7 @@ def poll(qrcode_key: str) -> dict[str, dict[str, str] | int]:
         cookies["DedeUserID__ckMd5"] = data_dict['DedeUserID__ckMd5']
         cookies["SESSDATA"] = data_dict['SESSDATA']
         cookies["csrf"] = data_dict['bili_jct']
+        # 补充 cookie
         response = requests.get(f'https://www.bilibili.com/video/', headers=headers)
         cookies.update(response.cookies.get_dict())
     return {'code': code, 'cookies': cookies}
