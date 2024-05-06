@@ -5441,3 +5441,6 @@ class WbiSigna:
         }
         accinfo = requests.get(api, headers=headers, params=wbi(data)).json()
         return accinfo["data"]
+
+
+
