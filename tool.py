@@ -338,3 +338,16 @@ def wbi(data: dict):
         sub_key=sub_key
     )
     return signed_params
+
+
+def b64_file(base64_string: str, file_path: str):
+    """
+    将Base64编码的字符串转换回文件
+    @param base64_string:Base64编码的字符串
+    @param file_path:目标文件路径
+    """
+    # 解码Base64字符串
+    decoded_data = base64.b64decode(base64_string)
+    # 将解码后的数据写入文件
+    with open(file_path, "wb") as f:
+        f.write(decoded_data)
