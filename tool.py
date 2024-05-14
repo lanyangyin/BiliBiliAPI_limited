@@ -351,3 +351,14 @@ def b64_file(base64_string: str, file_path: str):
     # 将解码后的数据写入文件
     with open(file_path, "wb") as f:
         f.write(decoded_data)
+
+
+# 定义一个异步函数，用来等待文件出现
+async def wait_for_file(path, timeout=60):
+    start_time = time.time()  # 记录等待开始的时间
+    while not os.path.exists(path):  # 循环检查文件是否存在
+        if time.time() - start_time > timeout:  # 如果等待时间超过指定的超时时间
+            raise TimeoutError("Timeout while waiting for file")  # 抛出超时异常
+        await asyncio.sleep(1)  # 等待1秒钟再次检查文件是否存在
+    return path  # 当文件出现后，返回文件路径
+
