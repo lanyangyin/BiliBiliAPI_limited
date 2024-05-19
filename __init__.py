@@ -4,7 +4,7 @@ from login import generate, poll
 from special import master
 
 
-def start_login(uid: int):
+def start_login(uid: int = 0):
     """
     扫码登陆获得cookies
     :param uid:
@@ -16,8 +16,10 @@ def start_login(uid: int):
     if islogin:
         return dict2cookieformat(cookies)
     else:
+        # 申请登录二维码
         url8qrcode_key = generate()
         url = url8qrcode_key['url']
+        # 二维码
         qr = qr_encode(url)
         print(qr["str"])
         qrcode_key = url8qrcode_key['qrcode_key']
@@ -41,7 +43,7 @@ def start_login(uid: int):
     return dict2cookieformat(cookies)
 
 
-print(start_login(143474500))
+print(start_login())
 
 
 
