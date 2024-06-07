@@ -1,14 +1,10 @@
 # coding=utf-8
 # 只能二维码登录
 import json
-import os
 import re
-import time
-from typing import Dict, Any
 
 import requests
 
-from tool import urldata_dict
 
 debug = False
 debug_num = 0
@@ -68,14 +64,28 @@ def poll(qrcode_key: str) -> dict[str, dict[str, str] | int]:
     cookies = {}
     code = data['code']
     if code == 0:
+        def urldata_dict(url: str):
+            """
+            将 url参数 转换成 dict
+            @param url: 带有参数的url
+            @return: 转换成的dict
+            @rtype: dict
+            """
+            urldata = url.split('?', 1)[1]
+            data_list = urldata.split('&')
+            data_dict = {}
+            for data in data_list:
+                data = data.split('=')
+                data_dict[data[0]] = data[1]
+            return data_dict
         data_dict = urldata_dict(data['url'])
         cookies["DedeUserID"] = data_dict['DedeUserID']
         cookies["DedeUserID__ckMd5"] = data_dict['DedeUserID__ckMd5']
         cookies["SESSDATA"] = data_dict['SESSDATA']
-        cookies["csrf"] = data_dict['bili_jct']
+        cookies["bili_jct"] = data_dict['bili_jct']
         # 补充 cookie
-        response = requests.get(f'https://www.bilibili.com/video/', headers=headers)
-        cookies.update(response.cookies.get_dict())
+        buvid3 = requests.get(f'https://www.bilibili.com/video/', headers=headers)
+        cookies.update(buvid3.cookies.get_dict())
     return {'code': code, 'cookies': cookies}
 
 
