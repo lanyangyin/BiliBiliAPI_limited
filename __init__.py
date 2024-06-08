@@ -68,5 +68,5 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
     return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
 
 
-cookies = asyncio.run(start_login())
+login_info = asyncio.run(start_login(143474500))
 # print(cookies)
