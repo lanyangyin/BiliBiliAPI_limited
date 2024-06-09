@@ -32,7 +32,7 @@ class config_B:
         # 配置文件 config.json 路径
         self.configpath = f'.\\{dirname}\\config.json'
         if not os.path.exists(".\\" + dirname):
-            os.makedirs(dirname)
+            os.makedirs(dirname, exist_ok=True)
 
     def update(self, cookies: dict):
         """

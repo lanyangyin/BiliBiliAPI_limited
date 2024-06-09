@@ -18,6 +18,9 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
     # 尝试使用存录的cookies登录
     islogin = master(dict2cookieformat(cookies)).interface_nav()["isLogin"]
     if islogin:
+        # 记录到默认登录字段
+        configb = config_B(uid=0, dirname=dirname)
+        configb.update(cookies)
         return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
     else:  # cookies无法登录或者没有记录所填的uid
         # 申请登录二维码
