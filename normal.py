@@ -388,6 +388,54 @@ def v2_index_getRoomPlayInfo(room_id: int):
 
 
 # pprint.pprint(v2_index_getRoomPlayInfo(room_id=213))
+
+def getRoomBaseInfo(room_id:int):
+    """
+    直播间的
+    @param room_id:
+    @return:
+    "data": {
+    "by_uids": {
+
+    },
+    "by_room_ids": {
+        "25322725": {
+            "room_id": 25322725,
+            "uid": 143474500,
+            "area_id": 192,
+            "live_status": 0,
+            "live_url": "https://live.bilibili.com/25322725",
+            "parent_area_id": 5,
+            "title": "obsのlua插件2测试",
+            "parent_area_name": "电台",
+            "area_name": "聊天电台",
+            "live_time": "0000-00-00 00:00:00",
+            "description": "个人简介测试",
+            "tags": "我的个人标签测试",
+            "attention": 35,
+            "online": 0,
+            "short_id": 0,
+            "uname": "兰阳音",
+            "cover": "http://i0.hdslb.com/bfs/live/new_room_cover/c17af2dbbbdfce33888e834bdb720edbf9515f95.jpg",
+            "background": "",
+            "join_slide": 1,
+            "live_id": 0,
+            "live_id_str": "0"
+        }
+    }
+  }
+    """
+    api = "https://api.live.bilibili.com/xlive/web-room/v1/index/getRoomBaseInfo"
+    data = {
+        'room_ids': room_id,
+        'req_biz': "link-center"
+    }
+    RoomBaseInfo = requests.get(api, headers=headers, params=data).json()
+    return RoomBaseInfo["data"]
+
+# pprint.pprint(getRoomBaseInfo(room_id=213))
+
+
 def finger_spi():
     """
     不知道是啥，有点像 buvid3
@@ -405,3 +453,224 @@ def finger_spi():
 
 
 # pprint.pprint(finger_spi())
+
+
+def Area_getList():
+    """
+    获取直播分区
+    @return:
+    <table>
+    <thead>
+    <tr>
+        <th>字段</th>
+        <th>类型</th>
+        <th>内容</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>code</td>
+        <td>num</td>
+        <td>返回值</td>
+        <td>0：成功</td>
+    </tr>
+    <tr>
+        <td>msg</td>
+        <td>str</td>
+        <td>错误信息</td>
+        <td>默认为success</td>
+    </tr>
+    <tr>
+        <td>message</td>
+        <td>str</td>
+        <td>错误信息</td>
+        <td>默认为success</td>
+    </tr>
+    <tr>
+        <td>data</td>
+        <td>array</td>
+        <td>父分区列表</td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+<p><code>data</code>数组：</p>
+<table>
+    <thead>
+    <tr>
+        <th>项</th>
+        <th>类型</th>
+        <th>内容</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>0</td>
+        <td>obj</td>
+        <td>父分区1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>n</td>
+        <td>obj</td>
+        <td>父分区(n+1)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>……</td>
+        <td>obj</td>
+        <td>……</td>
+        <td>……</td>
+    </tr>
+    </tbody>
+</table>
+<p><code>data</code>数组中的对象：</p>
+<table>
+    <thead>
+    <tr>
+        <th>字段</th>
+        <th>类型</th>
+        <th>内容</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>id</td>
+        <td>num</td>
+        <td>父分区id</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>name</td>
+        <td>父分区名</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>list</td>
+        <td>list</td>
+        <td>子分区列表</td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+<p><code>data</code>数组中的对象中的<code>list</code>数组：</p>
+<table>
+    <thead>
+    <tr>
+        <th>项</th>
+        <th>类型</th>
+        <th>内容</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>0</td>
+        <td>obj</td>
+        <td>子分区1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>n</td>
+        <td>obj</td>
+        <td>子分区(n+1)</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>……</td>
+        <td>obj</td>
+        <td>……</td>
+        <td>……</td>
+    </tr>
+    </tbody>
+</table>
+<p><code>list</code>数组中的对象：</p>
+<table>
+    <thead>
+    <tr>
+        <th>字段</th>
+        <th>类型</th>
+        <th>内容</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>id</td>
+        <td>str</td>
+        <td>子分区id</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>parent_id</td>
+        <td>str</td>
+        <td>父分区id</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>old_area_id</td>
+        <td>str</td>
+        <td>旧分区id</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>str</td>
+        <td>子分区名</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>act_id</td>
+        <td>str</td>
+        <td>0</td>
+        <td><strong>作用尚不明确</strong></td>
+    </tr>
+    <tr>
+        <td>pk_status</td>
+        <td>str</td>
+        <td>？？？</td>
+        <td><strong>作用尚不明确</strong></td>
+    </tr>
+    <tr>
+        <td>hot_status</td>
+        <td>num</td>
+        <td>是否为热门分区</td>
+        <td>0：否<br>1：是</td>
+    </tr>
+    <tr>
+        <td>lock_status</td>
+        <td>str</td>
+        <td>0</td>
+        <td><strong>作用尚不明确</strong></td>
+    </tr>
+    <tr>
+        <td>pic</td>
+        <td>str</td>
+        <td>子分区标志图片url</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>parent_name</td>
+        <td>str</td>
+        <td>父分区名</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>area_type</td>
+        <td>num</td>
+        <td></td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+
+    """
+    api = "https://api.live.bilibili.com/room/v1/Area/getList"
+    AreaList = requests.get(api, headers=headers).json()
+    return AreaList["data"]
+
+pprint.pprint(Area_getList())
