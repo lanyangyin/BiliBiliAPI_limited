@@ -6,15 +6,17 @@ import html
 import io
 import json
 import os
+import re
 import sys
-from io import StringIO
-from urllib.parse import quote, unquote
+import time
+import urllib.parse
 from functools import reduce
 from hashlib import md5
-import urllib.parse
-import time
-import requests
+from io import StringIO
+from urllib.parse import quote, unquote
+
 import qrcode
+import requests
 from qrcode.image.pil import PilImage
 
 
@@ -226,6 +228,29 @@ def dict2cookieformat(jsondict: dict) -> str:
 
 # print(dict2cookieformat({'0': '9&0', "8": 8}))
 
+def cookie2dict(cookie: str):
+    """
+    将cookie字典化
+    @param cookie:
+    @return:
+    """
+    # 用分号分隔输入字符串
+    key_value_pairs = cookie.split('; ')
+    # 初始化空字典
+    result_dict = {}
+    # 遍历每个键值对
+    for pair in key_value_pairs:
+        # 将pair拆分为key和value
+        key, value = pair.split('=')
+        # 删除任何前导或尾随空格
+        key = key.strip()
+        value = value.strip()
+        # 解码值中任何url编码的字符
+        value = urllib.parse.unquote(value)
+        # 将键值对添加到字典中
+        result_dict[key] = value
+    return result_dict
+
 
 def html_decoded(htmlstr: str) -> str:
     """
@@ -368,10 +393,7 @@ async def wait_for_file(path, timeout=60):
 # login
 # coding=utf-8
 # 只能二维码登录
-import json
-import re
 
-import requests
 
 debug = False
 debug_num = 0
@@ -431,21 +453,6 @@ def poll(qrcode_key: str) -> dict[str, dict[str, str] | int]:
     cookies = {}
     code = data['code']
     if code == 0:
-        def urldata_dict(url: str):
-            """
-            将 url参数 转换成 dict
-            @param url: 带有参数的url
-            @return: 转换成的dict
-            @rtype: dict
-            """
-            urldata = url.split('?', 1)[1]
-            data_list = urldata.split('&')
-            data_dict = {}
-            for data in data_list:
-                data = data.split('=')
-                data_dict[data[0]] = data[1]
-            return data_dict
-
         data_dict = urldata_dict(data['url'])
         cookies["DedeUserID"] = data_dict['DedeUserID']
         cookies["DedeUserID__ckMd5"] = data_dict['DedeUserID__ckMd5']
@@ -483,9 +490,6 @@ def get_buvid3(bvid: str = 'BV16F411c7CR') -> dict:
 
 # normal
 # coding=utf-8
-import pprint
-
-import requests
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
@@ -1164,11 +1168,6 @@ def Area_getList():
 
 # special
 # coding=utf-8
-import math
-import pprint
-import time
-
-import requests
 
 
 class master:
@@ -5242,28 +5241,36 @@ class master:
         nav = requests.get(api, headers=headers).json()
         return nav["data"]
 
+    def getRoomHighlightState(self):
+        """
+        获取直播间号
+        @return:
+        """
+        api = "https://api.live.bilibili.com/xlive/app-blink/v1/highlight/getRoomHighlightState"
+        headers = self.headers
+        room_id = requests.get(api, headers=headers).json()["data"]["room_id"]
+        return room_id
+
 
 class CsrfAuthenticationL:
-    def __init__(self, cookie: str, cookies: dict,
+    def __init__(self, cookies: dict,
                  UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
         self.headers = {
             "User-Agent": UA,
-            "cookie": cookie,
+            "cookie": dict2cookieformat(cookies),
         }
-        self.csrf = cookies["bili_jct"]
+        self.cookies = cookies
+        self.cookie = dict2cookieformat(cookies)
 
     def AnchorChangeRoomArea(self, area_id):
         api = "https://api.live.bilibili.com/xlive/app-blink/v2/room/AnchorChangeRoomArea"
         data = {
             "platform": "pc",
-            "room_id": 25322725,
+            "room_id": master(self.cookie).getRoomHighlightState(),
             "area_id": area_id,
-            "csrf_token": self.csrf,
-            "csrf": self.csrf
+            "csrf_token": self.cookies["bili_jct"],
+            "csrf": self.cookies["bili_jct"]
         }
-
-
-# from tool import wbi
 
 
 class WbiSigna:
@@ -6632,10 +6639,6 @@ class WbiSigna:
 
 # 整合
 # coding=utf-8
-# from tool import config_B, qr_encode, dict2cookieformat
-# from login import generate, poll
-# from special import master
-import asyncio
 
 
 async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
@@ -6703,5 +6706,7 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
         configb.update(cookies)
     return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
 
-# login_info = asyncio.run(start_login(143474500))
-# print(cookies)
+login_info = asyncio.run(start_login(143474500))
+print(login_info)
+print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
+# print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
