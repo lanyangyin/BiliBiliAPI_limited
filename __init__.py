@@ -5263,7 +5263,7 @@ class CsrfAuthenticationL:
         }
 
 
-from tool import wbi
+# from tool import wbi
 
 
 class WbiSigna:
@@ -6632,9 +6632,9 @@ class WbiSigna:
 
 # 整合
 # coding=utf-8
-from tool import config_B, qr_encode, dict2cookieformat
-from login import generate, poll
-from special import master
+# from tool import config_B, qr_encode, dict2cookieformat
+# from login import generate, poll
+# from special import master
 import asyncio
 
 
