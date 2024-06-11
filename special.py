@@ -4078,6 +4078,29 @@ class master:
         return nav["data"]
 
 
+class CsrfAuthenticationL:
+    def __init__(self, cookie: str, cookies: dict,
+                 UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
+        self.headers = {
+            "User-Agent": UA,
+            "cookie": cookie,
+        }
+        self.csrf = cookies["bili_jct"]
+
+    def AnchorChangeRoomArea(self, area_id):
+        api = "https://api.live.bilibili.com/xlive/app-blink/v2/room/AnchorChangeRoomArea"
+        data = {
+            "platform": "pc",
+            "room_id": 25322725,
+            "area_id": area_id,
+            "csrf_token": self.csrf,
+            "csrf": self.csrf
+        }
+
+
+
+
+
 from tool import wbi
 class WbiSigna:
     def __init__(self, cookie: str,
