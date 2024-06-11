@@ -673,4 +673,4 @@ def Area_getList():
     AreaList = requests.get(api, headers=headers).json()
     return AreaList["data"]
 
-pprint.pprint(Area_getList())
+# pprint.pprint(Area_getList())
