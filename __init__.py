@@ -6,6 +6,7 @@ import html
 import io
 import json
 import os
+import pprint
 import re
 import sys
 import time
@@ -18,6 +19,8 @@ from urllib.parse import quote, unquote
 import qrcode
 import requests
 from qrcode.image.pil import PilImage
+
+pprint.pprint(sys.version_info)
 
 
 class config_B:
@@ -228,7 +231,7 @@ def dict2cookieformat(jsondict: dict) -> str:
 
 # print(dict2cookieformat({'0': '9&0', "8": 8}))
 
-def cookie2dict(cookie: str):
+def cookie2dict(cookie: str) -> dict:
     """
     将cookie字典化
     @param cookie:
@@ -1168,8 +1171,6 @@ def Area_getList():
 
 # special
 # coding=utf-8
-
-
 class master:
     def __init__(self, cookie: str,
                  UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
@@ -5253,24 +5254,86 @@ class master:
 
 
 class CsrfAuthenticationL:
-    def __init__(self, cookies: dict,
+    def __init__(self, cookie: str,
                  UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
         self.headers = {
             "User-Agent": UA,
-            "cookie": dict2cookieformat(cookies),
+            "cookie": cookie,
         }
-        self.cookies = cookies
-        self.cookie = dict2cookieformat(cookies)
+        self.cookies = cookie2dict(cookie)
+        self.cookie = cookie
 
-    def AnchorChangeRoomArea(self, area_id):
+    def AnchorChangeRoomArea(self, area_id: int):
+        """
+        更改直播分区
+        @param area_id:二级分区id
+        @return:
+        """
         api = "https://api.live.bilibili.com/xlive/app-blink/v2/room/AnchorChangeRoomArea"
+        headers = self.headers
         data = {
             "platform": "pc",
             "room_id": master(self.cookie).getRoomHighlightState(),
             "area_id": area_id,
+            "csrf": self.cookies["bili_jct"],
             "csrf_token": self.cookies["bili_jct"],
-            "csrf": self.cookies["bili_jct"]
         }
+        changeroomarea_ReturnValue = requests.post(api, headers=headers, params=data).json()
+        return changeroomarea_ReturnValue
+
+    def startLive(self, area_id: int):
+        """
+        开始直播
+        @param area_id: 二级分区id
+        @return:
+        """
+        api = "https://api.live.bilibili.com/room/v1/Room/startLive"
+        headers = self.headers
+        data = {
+            "platform": "pc",
+            "room_id": master(self.cookie).getRoomHighlightState(),
+            "area_v2": area_id,
+            "backup_stream": 0,
+            "csrf": self.cookies["bili_jct"],
+            "csrf_token": self.cookies["bili_jct"],
+        }
+        startLive_ReturnValue = requests.post(api, headers=headers, params=data).json()
+        return startLive_ReturnValue
+
+    def stopLive(self):
+        """
+        结束直播
+        @return:
+        """
+        api = "https://api.live.bilibili.com/room/v1/Room/stopLive"
+        headers = self.headers
+        data = {
+            "platform": "pc",
+            "room_id": master(self.cookie).getRoomHighlightState(),
+            "csrf": self.cookies["bili_jct"],
+            "csrf_token": self.cookies["bili_jct"],
+        }
+        stopLive_ReturnValue = requests.post(api, headers=headers, params=data).json()
+        return stopLive_ReturnValue
+
+    def FetchWebUpStreamAddr(self, reset_key: bool = False):
+        """
+        推流信息
+        @param reset_key: 布尔值，是否更新
+        @return:
+        """
+        api = "https://api.live.bilibili.com/xlive/app-blink/v1/live/FetchWebUpStreamAddr"
+        headers = self.headers
+        csrf = self.cookies["bili_jct"]
+        data = {
+            "platform": "pc",
+            "backup_stream": 0,
+            "reset_key": reset_key,
+            "csrf": csrf,
+            "csrf_token": csrf,
+        }
+        FetchWebUpStreamAddre_ReturnValue = requests.post(api, headers=headers, params=data).json()
+        return FetchWebUpStreamAddre_ReturnValue
 
 
 class WbiSigna:
@@ -6706,7 +6769,13 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
         configb.update(cookies)
     return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
 
+
 login_info = asyncio.run(start_login(143474500))
-print(login_info)
-print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
+# print(login_info)
+# print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
+# print(CsrfAuthenticationL(login_info["cookie"]).AnchorChangeRoomArea(646))
+# print(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
+# print(CsrfAuthenticationL(login_info["cookie"]).stopLive())
+pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
+
