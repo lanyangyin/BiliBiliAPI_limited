@@ -6777,5 +6777,5 @@ login_info = asyncio.run(start_login(143474500))
 # print(CsrfAuthenticationL(login_info["cookie"]).AnchorChangeRoomArea(646))
 # print(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
 # print(CsrfAuthenticationL(login_info["cookie"]).stopLive())
-pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
 
