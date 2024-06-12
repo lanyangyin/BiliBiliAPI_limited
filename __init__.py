@@ -5262,6 +5262,8 @@ class CsrfAuthenticationL:
         }
         self.cookies = cookie2dict(cookie)
         self.cookie = cookie
+        self.csrf = self.cookies["bili_jct"]
+
 
     def AnchorChangeRoomArea(self, area_id: int):
         """
@@ -5271,12 +5273,13 @@ class CsrfAuthenticationL:
         """
         api = "https://api.live.bilibili.com/xlive/app-blink/v2/room/AnchorChangeRoomArea"
         headers = self.headers
+        csrf = self.csrf
         data = {
             "platform": "pc",
             "room_id": master(self.cookie).getRoomHighlightState(),
             "area_id": area_id,
-            "csrf": self.cookies["bili_jct"],
-            "csrf_token": self.cookies["bili_jct"],
+            "csrf": csrf,
+            "csrf_token": csrf,
         }
         changeroomarea_ReturnValue = requests.post(api, headers=headers, params=data).json()
         return changeroomarea_ReturnValue
@@ -5289,13 +5292,14 @@ class CsrfAuthenticationL:
         """
         api = "https://api.live.bilibili.com/room/v1/Room/startLive"
         headers = self.headers
+        csrf = self.csrf
         data = {
             "platform": "pc",
             "room_id": master(self.cookie).getRoomHighlightState(),
             "area_v2": area_id,
             "backup_stream": 0,
-            "csrf": self.cookies["bili_jct"],
-            "csrf_token": self.cookies["bili_jct"],
+            "csrf": csrf,
+            "csrf_token": csrf,
         }
         startLive_ReturnValue = requests.post(api, headers=headers, params=data).json()
         return startLive_ReturnValue
@@ -5307,11 +5311,12 @@ class CsrfAuthenticationL:
         """
         api = "https://api.live.bilibili.com/room/v1/Room/stopLive"
         headers = self.headers
+        csrf = self.csrf
         data = {
             "platform": "pc",
             "room_id": master(self.cookie).getRoomHighlightState(),
-            "csrf": self.cookies["bili_jct"],
-            "csrf_token": self.cookies["bili_jct"],
+            "csrf": csrf,
+            "csrf_token": csrf,
         }
         stopLive_ReturnValue = requests.post(api, headers=headers, params=data).json()
         return stopLive_ReturnValue
@@ -5324,7 +5329,7 @@ class CsrfAuthenticationL:
         """
         api = "https://api.live.bilibili.com/xlive/app-blink/v1/live/FetchWebUpStreamAddr"
         headers = self.headers
-        csrf = self.cookies["bili_jct"]
+        csrf = self.csrf
         data = {
             "platform": "pc",
             "backup_stream": 0,
@@ -5334,6 +5339,22 @@ class CsrfAuthenticationL:
         }
         FetchWebUpStreamAddre_ReturnValue = requests.post(api, headers=headers, params=data).json()
         return FetchWebUpStreamAddre_ReturnValue
+
+    def send(self, roomid: int, msg: str):
+        api = "https://api.live.bilibili.com/msg/send"
+        headers = self.headers
+        csrf = self.csrf
+        data = {
+            'msg': msg,
+            'color': 16777215,
+            'fontsize': 25,
+            'rnd': str(time.time())[:8],
+            'roomid': roomid,
+            'csrf': csrf,
+            'csrf_token': csrf
+        }
+        send_ReturnValue = requests.post(api, headers=headers, params=data).json()
+        return send_ReturnValue
 
 
 class WbiSigna:
@@ -6778,4 +6799,5 @@ login_info = asyncio.run(start_login(143474500))
 # print(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
 # print(CsrfAuthenticationL(login_info["cookie"]).stopLive())
 # pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
+pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).send(25322725, "?\|?0[dog]"))
 
