@@ -5264,7 +5264,6 @@ class CsrfAuthenticationL:
         self.cookie = cookie
         self.csrf = self.cookies["bili_jct"]
 
-
     def AnchorChangeRoomArea(self, area_id: int):
         """
         更改直播分区
@@ -5341,6 +5340,12 @@ class CsrfAuthenticationL:
         return FetchWebUpStreamAddre_ReturnValue
 
     def send(self, roomid: int, msg: str):
+        """
+        发送弹幕
+        @param roomid:
+        @param msg:
+        @return:
+        """
         api = "https://api.live.bilibili.com/msg/send"
         headers = self.headers
         csrf = self.csrf
@@ -5355,6 +5360,46 @@ class CsrfAuthenticationL:
         }
         send_ReturnValue = requests.post(api, headers=headers, params=data).json()
         return send_ReturnValue
+
+    def v2_reply_add(self, oid: int, msg: str, root: int = 0, parent: int = 0, at_name_to_mid=None, pictures=None):
+        """
+        动态评论
+        @param oid: 动态号
+        @param msg:
+        @param root:
+        @param parent:
+        @param at_name_to_mid:  {str(B站昵称):int(b站uid)}
+        @type at_name_to_mid: dict[str, int]
+        @param pictures:[{"img_src":img_url,"img_width":1146,"img_height":716,"img_size":48.141}]
+        @type pictures:list[dict[str, str|int|float]]
+        @return:
+        """
+        if pictures is None:
+            pictures = []
+        if at_name_to_mid is None:
+            at_name_to_mid = {}
+        headers = self.headers
+        csrf = self.csrf
+        params = {
+            'csrf': csrf,
+        }
+        data = {
+            'oid': oid,
+            'type': 17,
+            'message': msg,
+            'plat': 1,
+            'at_name_to_mid': at_name_to_mid,
+            'pictures': pictures,
+            'has_vote_option': True
+        }
+        if root:
+            if parent:
+                data['root'] = root
+                data['parent'] = parent
+        api = f"https://api.bilibili.com/x/v2/reply/add"
+        print(api, data)
+        v2_reply_add_ReturnValue = requests.post(api, headers=headers, params=params, data=data).json()
+        return v2_reply_add_ReturnValue
 
 
 class WbiSigna:
@@ -6712,13 +6757,27 @@ class WbiSigna:
         </table>
 
         """
-        api = "https://api.bilibili.com/x/space/wbi/acc/info"
         headers = self.headers
+        api = "https://api.bilibili.com/x/space/wbi/acc/info"
         data = {
             "mid": mid,
         }
         accinfo = requests.get(api, headers=headers, params=wbi(data)).json()
         return accinfo["data"]
+
+    def relation_stat(self, vmid: int):
+        """
+        粉丝数
+        @param vmid:目标用户mid
+        @return:
+        """
+        headers = self.headers
+        api = "https://api.bilibili.com/x/relation/stat"
+        params = {
+            "vmid": vmid
+        }
+        stat = requests.get(api, headers=headers, params=wbi(params)).json()
+        return stat
 
 
 # 整合
@@ -6792,6 +6851,8 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
 
 
 login_info = asyncio.run(start_login(143474500))
+
+
 # print(login_info)
 # print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
@@ -6799,5 +6860,23 @@ login_info = asyncio.run(start_login(143474500))
 # print(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
 # print(CsrfAuthenticationL(login_info["cookie"]).stopLive())
 # pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
-pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).send(25322725, "?\|?0[dog]"))
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).send(25322725, "?\|?0[dog]"))
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).v2_reply_add(930979000889638997,"90908"))
+
+def EnoughNumberOfFans_to_DynamicCongratulation(cookie: str, mid: int, FanThreshold: int, oid: int):
+    """
+    粉丝数到达后动态评论祝贺
+    @param cookie:
+    @param mid: 目标用户mid
+    @param FanThreshold: 粉丝数阈值
+    @param oid: 动态号
+    @return:
+    """
+    while True:
+        fans_num = WbiSigna(cookie).relation_stat(mid)["data"]['follower']
+        t = time_format(time.time())
+        print(f"{t}\nB站id:{mid}，粉丝数：{fans_num}")
+        if int(fans_num) >= FanThreshold:
+            CsrfAuthenticationL(login_info["cookie"]).v2_reply_add(oid, f"{t}，有{fans_num}了！")
+            break
 
