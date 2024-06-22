@@ -85,6 +85,17 @@ class config_B:
             pass
         return cookies
 
+def split_by_n(seq, n):
+    """
+    每 n个字符 切分
+    @param seq:切分字符串
+    @type seq:str
+    @param n:切分字数
+    @type n: int
+    @return:
+    @rtype: list
+    """
+    return [seq[i:i+n] for i in range(0, len(seq), n)]
 
 def time_encode(dt) -> float:
     """
@@ -1172,13 +1183,15 @@ def Area_getList():
 # special
 # coding=utf-8
 class master:
-    def __init__(self, cookie: str,
-                 UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
+    def __init__(self, cookie: str, UA: str = None):
         """
         完善 浏览器headers
         @param cookies: B站cookie 的 cookies
         @param UA: 浏览器User-Agent
         """
+        if not UA:
+            UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0")
         self.headers = {
             "User-Agent": UA,
             "cookie": cookie,
@@ -5252,10 +5265,27 @@ class master:
         room_id = requests.get(api, headers=headers).json()["data"]["room_id"]
         return room_id
 
+    def GetEmoticons(self, roomid: int):
+        """
+        获取表情
+        @return:
+        @rtype: list
+        """
+        api = "https://api.live.bilibili.com/xlive/web-ucenter/v2/emoticon/GetEmoticons"
+        headers = self.headers
+        params = {
+            "platform": "pc",
+            "room_id": roomid
+        }
+        Emoticons = requests.get(api, headers=headers, params=params).json()["data"]["data"]
+        return Emoticons
+
 
 class CsrfAuthenticationL:
-    def __init__(self, cookie: str,
-                 UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
+    def __init__(self, cookie: str, UA: str = None):
+        if not UA:
+            UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0")
         self.headers = {
             "User-Agent": UA,
             "cookie": cookie,
@@ -5403,13 +5433,15 @@ class CsrfAuthenticationL:
 
 
 class WbiSigna:
-    def __init__(self, cookie: str,
-                 UA: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0"):
+    def __init__(self, cookie: str, UA: str = None):
         """
         完善 浏览器headers
         @param cookies: B站cookie 的 cookies
         @param UA: 浏览器User-Agent
         """
+        if not UA:
+            UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0")
         self.headers = {
             "User-Agent": UA,
             "cookie": cookie,
@@ -6856,8 +6888,9 @@ login_info = asyncio.run(start_login(143474500))
 # print(login_info)
 # print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
+pprint.pprint(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).GetEmoticons(203227))
 # print(CsrfAuthenticationL(login_info["cookie"]).AnchorChangeRoomArea(646))
-# print(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).startLive(646))
 # print(CsrfAuthenticationL(login_info["cookie"]).stopLive())
 # pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).FetchWebUpStreamAddr())
 # pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).send(25322725, "?\|?0[dog]"))
