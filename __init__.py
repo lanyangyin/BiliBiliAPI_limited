@@ -85,17 +85,33 @@ class config_B:
             pass
         return cookies
 
-def split_by_n(seq, n):
+def split_of_num(seq, num):
     """
     每 n个字符 切分
     @param seq:切分字符串
     @type seq:str
-    @param n:切分字数
-    @type n: int
+    @param num:切分字数
+    @type num: int
     @return:
     @rtype: list
     """
-    return [seq[i:i+n] for i in range(0, len(seq), n)]
+    return [seq[i:i+num] for i in range(0, len(seq), num)]
+
+
+def split_of_list(txt: str, str_list: list):
+    # 定义列表和字符串
+    text = txt
+    text = text.replace("'", "’").replace(",", "，")
+    for ostr in str_list:
+        text = text.replace(ostr, f"\', \'{ostr}\', \'")
+    text = f"[\'{text}\']"
+    split_text = eval(text)
+    l = []
+    for i in split_text:
+        if i:
+            l.append(i)
+    return l
+
 
 def time_encode(dt) -> float:
     """
