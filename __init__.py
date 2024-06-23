@@ -7009,16 +7009,46 @@ class Danmu:
                         tfo = contentinfo[0][15]['extra']['content']
                         afo = ""
                         if contentinfo[0][15]['extra']['reply_uname']:
-                            afo = " @" + contentinfo[0][15]['extra']['reply_uname'] + " "
+                            afo = f" @{contentinfo[0][15]['extra']['reply_uname']} "
                         ufo = contentinfo[0][15]['user']['base']['name']
                         mfo = ''
-                        wfo = ''
                         if contentinfo[0][15]['user']['medal']:
                             fmedal = contentinfo[0][15]['user']['medal']
                             mfo = f"【{fmedal['name']}|{fmedal['level']}】"
+                        wfo = ''
                         if contentinfo[-2] != [0]:
                             wfo = str(contentinfo[-2])
                         print(f"{wfo}{mfo}{ufo}：{afo}{tfo}")
+                    elif json.loads(content)['cmd'] == "WIDGET_BANNER":
+                        pass
+                    elif json.loads(content)['cmd'] == "INTERACT_WORD":
+                        tfo = "进入直播间或关注消息"
+                        if json.loads(content)['data']['msg_type'] == 1:
+                            tfo = "进入直播间："
+                        elif json.loads(content)['data']['msg_type'] == 2:
+                            tfo = "关注直播间："
+                        ufo = json.loads(content)['data']['uname']
+                        mfo = ""
+                        if json.loads(content)['data']['fans_medal']:
+                            fmedal = json.loads(content)['data']['fans_medal']
+                            mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
+                        wfo = ''
+                        try:
+                            if json.loads(content)['data']['uinfo']['wealth']['level']:
+                                wfo = f"[{json.loads(content)['data']['uinfo']['wealth']['level']}]"
+                        except:
+                            pass
+                        print(f"{tfo}：{wfo}{mfo}{ufo}")
+                    elif json.loads(content)['cmd'] == "DM_INTERACTION":
+                        contentdata = json.loads(content)['data']
+                        pprint.pprint(json.loads(contentdata['data']))
+                        contentdata['data'] = json.loads(contentdata['data'])
+                        tfo = "连续发送弹幕或点赞"
+                        if json.loads(content)['data']['type'] == 102:
+                            tfo = contentdata['data']['data']["combo"]
+                        elif json.loads(content)['data']['type'] == 106:
+                            tfo = "点赞："
+
                     else:
                         pprint.pprint(json.loads(content)['cmd'])
 
@@ -7068,5 +7098,5 @@ headers = {
                   'Chrome/58.0.3029.110 Safari/537.3',
     'cookie': login_info["cookie"]
 }
-asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(3044248).main())
+asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(21452505).main())
 
