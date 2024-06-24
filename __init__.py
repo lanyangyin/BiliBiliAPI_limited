@@ -7028,16 +7028,18 @@ class Danmu:
                         pass
                     elif json.loads(content)['cmd'] == "INTERACT_WORD":
                         pass
+                        contentdata = json.loads(content)['data']
+                        # pprint.pprint(contentdata)
                         tfo = "进入直播间或关注消息"
-                        if json.loads(content)['data']['msg_type'] == 1:
+                        if contentdata['msg_type'] == 1:
                             tfo = "进入直播间"
-                        elif json.loads(content)['data']['msg_type'] == 2:
+                        elif contentdata['msg_type'] == 2:
                             tfo = "关注直播间"
-                        ufo = json.loads(content)['data']['uname']
+                        ufo = contentdata['uname']
                         mfo = ""
-                        if json.loads(content)['data']['fans_medal']:
-                            fmedal = json.loads(content)['data']['fans_medal']
-                            mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
+                        if contentdata['fans_medal']:
+                            fmedal = contentdata['fans_medal']
+                            mfo = f"【{fmedal['medal_name']}|{fmedal['medal_level']}】"
                         wfo = ''
                         try:
                             if json.loads(content)['data']['uinfo']['wealth']['level']:
