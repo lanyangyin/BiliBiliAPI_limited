@@ -7028,69 +7028,69 @@ class Danmu:
                         pass
                     elif json.loads(content)['cmd'] == "INTERACT_WORD":
                         pass
-                        # tfo = "进入直播间或关注消息"
-                        # if json.loads(content)['data']['msg_type'] == 1:
-                        #     tfo = "进入直播间"
-                        # elif json.loads(content)['data']['msg_type'] == 2:
-                        #     tfo = "关注直播间"
-                        # ufo = json.loads(content)['data']['uname']
-                        # mfo = ""
-                        # if json.loads(content)['data']['fans_medal']:
-                        #     fmedal = json.loads(content)['data']['fans_medal']
-                        #     mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
-                        # wfo = ''
-                        # try:
-                        #     if json.loads(content)['data']['uinfo']['wealth']['level']:
-                        #         wfo = f"[{json.loads(content)['data']['uinfo']['wealth']['level']}]"
-                        # except:
-                        #     pass
-                        # print(f"{tfo}：\t{wfo}{mfo}{ufo}")
+                        tfo = "进入直播间或关注消息"
+                        if json.loads(content)['data']['msg_type'] == 1:
+                            tfo = "进入直播间"
+                        elif json.loads(content)['data']['msg_type'] == 2:
+                            tfo = "关注直播间"
+                        ufo = json.loads(content)['data']['uname']
+                        mfo = ""
+                        if json.loads(content)['data']['fans_medal']:
+                            fmedal = json.loads(content)['data']['fans_medal']
+                            mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
+                        wfo = ''
+                        try:
+                            if json.loads(content)['data']['uinfo']['wealth']['level']:
+                                wfo = f"[{json.loads(content)['data']['uinfo']['wealth']['level']}]"
+                        except:
+                            pass
+                        print(f"{tfo}：\t{wfo}{mfo}{ufo}")
                     elif json.loads(content)['cmd'] == "DM_INTERACTION":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # contentdata['data'] = json.loads(contentdata['data'])
-                        # tfo = "连续发送弹幕或点赞"
-                        # if contentdata['type'] == 102:
-                        #     tfo = ""
-                        #     for contentdatacombo in contentdata['data']['combo'][:-1]:
-                        #         tfo += f"热词：\t{contentdatacombo['cnt']}\t人{contentdatacombo['guide']}{contentdatacombo['content']}\n"
-                        #     tfo += f"连续弹幕：\t{contentdata['data']['combo'][-1]['cnt']}\t人{contentdata['data']['combo'][-1]['guide']}{contentdata['data']['combo'][-1]['content']}"
-                        # elif contentdata['type'] == 106:
-                        #     tfo = f"连续点赞：\t{contentdata['data']['cnt']}\t{contentdata['data']['suffix_text']}"
-                        # print(f"{tfo}")
+                        contentdata = json.loads(content)['data']
+                        contentdata['data'] = json.loads(contentdata['data'])
+                        tfo = "连续发送弹幕或点赞"
+                        if contentdata['type'] == 102:
+                            tfo = ""
+                            for contentdatacombo in contentdata['data']['combo'][:-1]:
+                                tfo += f"热词：\t{contentdatacombo['cnt']}\t人{contentdatacombo['guide']}{contentdatacombo['content']}\n"
+                            tfo += f"连续弹幕：\t{contentdata['data']['combo'][-1]['cnt']}\t人{contentdata['data']['combo'][-1]['guide']}{contentdata['data']['combo'][-1]['content']}"
+                        elif contentdata['type'] == 106:
+                            tfo = f"连续点赞：\t{contentdata['data']['cnt']}\t{contentdata['data']['suffix_text']}"
+                        print(f"{tfo}")
                     elif json.loads(content)['cmd'] == "GUARD_BUY":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # tfo = f"上舰：\t{contentdata['username']}\t购买{contentdata['num']}个\t【{contentdata['gift_name']}】"
-                        # print(f"{tfo}")
+                        contentdata = json.loads(content)['data']
+                        tfo = f"上舰：\t{contentdata['username']}\t购买{contentdata['num']}个\t【{contentdata['gift_name']}】"
+                        print(f"{tfo}")
                     elif json.loads(content)['cmd'] == "LIKE_INFO_V3_CLICK":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # tfo = contentdata['like_text']
-                        # ufo = contentdata['uname']
-                        # mfo = ""
-                        # if contentdata['fans_medal']:
-                        #     fmedal = contentdata['fans_medal']
-                        #     mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
-                        # wfo = ''
-                        # try:
-                        #     if contentdata['uinfo']['wealth']['level']:
-                        #         wfo = f"[{contentdata['uinfo']['wealth']['level']}]"
-                        # except:
-                        #     pass
-                        # print(f"点赞：\t{wfo}{mfo}{ufo}\t{tfo}")
+                        contentdata = json.loads(content)['data']
+                        tfo = contentdata['like_text']
+                        ufo = contentdata['uname']
+                        mfo = ""
+                        if contentdata['fans_medal']:
+                            fmedal = contentdata['fans_medal']
+                            mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
+                        wfo = ''
+                        try:
+                            if contentdata['uinfo']['wealth']['level']:
+                                wfo = f"[{contentdata['uinfo']['wealth']['level']}]"
+                        except:
+                            pass
+                        print(f"点赞：\t{wfo}{mfo}{ufo}\t{tfo}")
                     elif json.loads(content)['cmd'] == "LIKE_INFO_V3_UPDATE":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # print(f"点赞数：\t{contentdata['click_count']}")
+                        contentdata = json.loads(content)['data']
+                        print(f"点赞数：\t{contentdata['click_count']}")
                     elif json.loads(content)['cmd'] == "ONLINE_RANK_COUNT":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # print(f"高能用户数：\t{contentdata['count']}")
+                        contentdata = json.loads(content)['data']
+                        print(f"高能用户数：\t{contentdata['count']}")
                     elif json.loads(content)['cmd'] == "WATCHED_CHANGE":
                         pass
-                        # contentdata = json.loads(content)['data']
-                        # print(f"直播间看过人数：\t{contentdata['num']}\t{contentdata['text_large']}")
+                        contentdata = json.loads(content)['data']
+                        print(f"直播间看过人数：\t{contentdata['num']}\t{contentdata['text_large']}")
                     elif json.loads(content)['cmd'] == "ONLINE_RANK_V2":
                         pass
                     elif json.loads(content)['cmd'] == "STOP_LIVE_ROOM_LIST":
