@@ -6926,6 +6926,8 @@ class Danmu:
         self.cookie = cookie
 
     def get_websocket_client(self, roomid: int):
+        global roomid_for_Danmu
+        roomid_for_Danmu = roomid
         danmu_info = getDanmuInfo(roomid)
         token = danmu_info['data']['token']
         host = danmu_info['data']['host_list'][-1]
@@ -6985,6 +6987,7 @@ class Danmu:
             return header + content_bytes
 
         def unpack(self, byte_buffer: bytes):
+            global roomid_for_Danmu
             package_len = int.from_bytes(byte_buffer[0:4], 'big')
             head_length = int.from_bytes(byte_buffer[4:6], 'big')
             prot_ver = int.from_bytes(byte_buffer[6:8], 'big')
@@ -6998,12 +7001,14 @@ class Danmu:
 
             content = content_bytes.decode('utf-8')
             if opt_code == 8:  # AUTH_REPLY
+                print(f"尝试连接【{getRoomBaseInfo(roomid_for_Danmu)['by_room_ids'][str(roomid_for_Danmu)]['uname']}】的直播间")
                 print(f"身份验证回复: {content}\n")
             elif opt_code == 5:  # SEND_SMS_REPLY
                 if content not in self.saved_danmudata:
                     self.saved_danmudata.add(content)
                     # print(f"Danmu message at {datetime.datetime.now()}: {content}")
                     if json.loads(content)['cmd'] == "DANMU_MSG":
+                        pass
                         contentinfo = json.loads(content)['info']
                         contentinfo[0][15]['extra'] = json.loads(contentinfo[0][15]['extra'])
                         tfo = contentinfo[0][15]['extra']['content']
@@ -7025,9 +7030,9 @@ class Danmu:
                         pass
                         # tfo = "进入直播间或关注消息"
                         # if json.loads(content)['data']['msg_type'] == 1:
-                        #     tfo = "进入直播间："
+                        #     tfo = "进入直播间"
                         # elif json.loads(content)['data']['msg_type'] == 2:
-                        #     tfo = "关注直播间："
+                        #     tfo = "关注直播间"
                         # ufo = json.loads(content)['data']['uname']
                         # mfo = ""
                         # if json.loads(content)['data']['fans_medal']:
@@ -7039,17 +7044,92 @@ class Danmu:
                         #         wfo = f"[{json.loads(content)['data']['uinfo']['wealth']['level']}]"
                         # except:
                         #     pass
-                        # print(f"{tfo}：{wfo}{mfo}{ufo}")
+                        # print(f"{tfo}：\t{wfo}{mfo}{ufo}")
                     elif json.loads(content)['cmd'] == "DM_INTERACTION":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # contentdata['data'] = json.loads(contentdata['data'])
+                        # tfo = "连续发送弹幕或点赞"
+                        # if contentdata['type'] == 102:
+                        #     tfo = ""
+                        #     for contentdatacombo in contentdata['data']['combo'][:-1]:
+                        #         tfo += f"热词：\t{contentdatacombo['cnt']}\t人{contentdatacombo['guide']}{contentdatacombo['content']}\n"
+                        #     tfo += f"连续弹幕：\t{contentdata['data']['combo'][-1]['cnt']}\t人{contentdata['data']['combo'][-1]['guide']}{contentdata['data']['combo'][-1]['content']}"
+                        # elif contentdata['type'] == 106:
+                        #     tfo = f"连续点赞：\t{contentdata['data']['cnt']}\t{contentdata['data']['suffix_text']}"
+                        # print(f"{tfo}")
+                    elif json.loads(content)['cmd'] == "GUARD_BUY":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # tfo = f"上舰：\t{contentdata['username']}\t购买{contentdata['num']}个\t【{contentdata['gift_name']}】"
+                        # print(f"{tfo}")
+                    elif json.loads(content)['cmd'] == "LIKE_INFO_V3_CLICK":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # tfo = contentdata['like_text']
+                        # ufo = contentdata['uname']
+                        # mfo = ""
+                        # if contentdata['fans_medal']:
+                        #     fmedal = contentdata['fans_medal']
+                        #     mfo = f"【{fmedal['medal_name']}|{fmedal['guard_level']}】"
+                        # wfo = ''
+                        # try:
+                        #     if contentdata['uinfo']['wealth']['level']:
+                        #         wfo = f"[{contentdata['uinfo']['wealth']['level']}]"
+                        # except:
+                        #     pass
+                        # print(f"点赞：\t{wfo}{mfo}{ufo}\t{tfo}")
+                    elif json.loads(content)['cmd'] == "LIKE_INFO_V3_UPDATE":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # print(f"点赞数：\t{contentdata['click_count']}")
+                    elif json.loads(content)['cmd'] == "ONLINE_RANK_COUNT":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # print(f"高能用户数：\t{contentdata['count']}")
+                    elif json.loads(content)['cmd'] == "WATCHED_CHANGE":
+                        pass
+                        # contentdata = json.loads(content)['data']
+                        # print(f"直播间看过人数：\t{contentdata['num']}\t{contentdata['text_large']}")
+                    elif json.loads(content)['cmd'] == "ONLINE_RANK_V2":
+                        pass
+                    elif json.loads(content)['cmd'] == "STOP_LIVE_ROOM_LIST":
+                        pass
+                    elif json.loads(content)['cmd'] == "PK_BATTLE_PRE_NEW":
+                        pass
+                    elif json.loads(content)['cmd'] == "PK_BATTLE_PRE":
+                        pass
+                    elif json.loads(content)['cmd'] == "PK_BATTLE_START":
+                        pass
+                    elif json.loads(content)['cmd'] == "RECOMMEND_CARD":
+                        pass
+                    elif json.loads(content)['cmd'] == "SEND_GIFT":
+                        pass
                         contentdata = json.loads(content)['data']
-                        contentdata['data'] = json.loads(contentdata['data'])
-                        pprint.pprint(contentdata['data'])
-                        tfo = "连续发送弹幕或点赞"
-                        if contentdata['type'] == 102:
-                            tfo = contentdata['data']['combo'][0]['guide'] + contentdata['data']['combo'][0]['content']
-                        elif contentdata['type'] == 106:
-                            tfo = f"点赞：{contentdata['data']['cnt']}{contentdata['data']['suffix_text']}"
-
+                        # pprint.pprint(contentdata)
+                        ufo = contentdata['uname']
+                        mfo = ""
+                        if contentdata['medal_info']['medal_name']:
+                            medali = contentdata['medal_info']
+                            mfo = f"【{medali['medal_name']}|{medali['medal_level']}】"
+                        wfo = ''
+                        if contentdata['wealth_level'] != 0:
+                            wfo = f"[{contentdata['wealth_level']}]"
+                        tfo = ''
+                        if contentdata['batch_combo_send']:
+                            tfo += contentdata['batch_combo_send']['action']
+                            if contentdata['batch_combo_send']['blind_gift']:
+                                contentdata_bcsb_g = contentdata['batch_combo_send']['blind_gift']
+                                tfo += f"\t【{contentdata_bcsb_g['original_gift_name']}】{contentdata_bcsb_g['gift_action']}"
+                                coin = f"{contentdata_bcsb_g['gift_tip_price']/1000}￥\t{(contentdata_bcsb_g['gift_tip_price']-contentdata['total_coin'])/1000}￥"
+                            else:
+                                coin = f"{contentdata['total_coin'] / 1000}￥"
+                            tfo += f"{contentdata['num']}个《{contentdata['batch_combo_send']['gift_name']}》\t{coin}"
+                        else:
+                            tfo += f"{contentdata['action']}{contentdata['num']}个《{contentdata['giftName']}》"
+                        print(f'礼物：\t{wfo}{mfo}{ufo}\t{tfo}')
+                    elif json.loads(content)['cmd'] == "NOTICE_MSG":
+                        pass
                     else:
                         pprint.pprint(json.loads(content)['cmd'])
 
@@ -7066,7 +7146,7 @@ login_info = asyncio.run(start_login(3546559824267399))
 
 
 # print(login_info)
-print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
+# print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
 # pprint.pprint(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).GetEmoticons(203227))
 # print(CsrfAuthenticationL(login_info["cookie"]).AnchorChangeRoomArea(646))
@@ -7092,12 +7172,12 @@ def EnoughNumberOfFans_to_DynamicCongratulation(cookie: str, mid: int, FanThresh
         if int(fans_num) >= FanThreshold:
             CsrfAuthenticationL(login_info["cookie"]).v2_reply_add(oid, f"{t}，有{fans_num}了！")
             break
-print(login_info["cookie"])
+# print(login_info["cookie"])
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/58.0.3029.110 Safari/537.3',
     'cookie': login_info["cookie"]
 }
-asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(21452505).main())
+asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(1016).main())
 
