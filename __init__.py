@@ -9,6 +9,7 @@ import os
 import pprint
 import re
 import sys
+import threading
 import time
 import urllib.parse
 import zlib
@@ -1196,22 +1197,6 @@ def Area_getList():
 
 
 # pprint.pprint(Area_getList())
-
-def getDanmuInfo(roomid: int) -> dict:
-    """
-    获取信息流认证秘钥
-    @param roomid: 直播间真实id
-    @return:
-    <p>根对象：</p>
-    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>code</td><td>num</td><td>返回值</td><td>0：成功<br>65530：token错误（登录错误）<br>1：错误<br>60009：分区不存在<br><strong>（其他错误码有待补充）</strong></td></tr><tr><td>message</td><td>str</td><td>错误信息</td><td>默认为空</td></tr><tr><td>ttl</td><td>num</td><td>1</td><td></td></tr><tr><td>data</td><td>obj</td><td>信息本体</td><td></td></tr></tbody></table>
-    <p><code>data</code>对象：</p>
-    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>group</td><td>str</td><td>live</td><td></td></tr><tr><td>business_id</td><td>num</td><td>0</td><td></td></tr><tr><td>refresh_row_factor</td><td>num</td><td>0.125</td><td></td></tr><tr><td>refresh_rate</td><td>num</td><td>100</td><td></td></tr><tr><td>max_delay</td><td>num</td><td>5000</td><td></td></tr><tr><td>token</td><td>str</td><td>认证秘钥</td><td></td></tr><tr><td>host_list</td><td>array</td><td>信息流服务器节点列表</td><td></td></tr></tbody></table>
-    <p><code>host_list</code>数组中的对象：</p>
-    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>host</td><td>str</td><td>服务器域名</td><td></td></tr><tr><td>port</td><td>num</td><td>tcp端口</td><td></td></tr><tr><td>wss_port</td><td>num</td><td>wss端口</td><td></td></tr><tr><td>ws_port</td><td>num</td><td>ws端口</td><td></td></tr></tbody></table>
-    """
-    url = f'https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id={roomid}'
-    response = requests.get(url, headers=headers).json()
-    return response
 
 
 # special
@@ -5321,6 +5306,23 @@ class master:
         Emoticons = requests.get(api, headers=headers, params=params).json()["data"]["data"]
         return Emoticons
 
+    def getDanmuInfo(self, roomid: int) -> dict:
+        """
+        获取信息流认证秘钥
+        @param roomid: 直播间真实id
+        @return:
+        <p>根对象：</p>
+        <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>code</td><td>num</td><td>返回值</td><td>0：成功<br>65530：token错误（登录错误）<br>1：错误<br>60009：分区不存在<br><strong>（其他错误码有待补充）</strong></td></tr><tr><td>message</td><td>str</td><td>错误信息</td><td>默认为空</td></tr><tr><td>ttl</td><td>num</td><td>1</td><td></td></tr><tr><td>data</td><td>obj</td><td>信息本体</td><td></td></tr></tbody></table>
+        <p><code>data</code>对象：</p>
+        <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>group</td><td>str</td><td>live</td><td></td></tr><tr><td>business_id</td><td>num</td><td>0</td><td></td></tr><tr><td>refresh_row_factor</td><td>num</td><td>0.125</td><td></td></tr><tr><td>refresh_rate</td><td>num</td><td>100</td><td></td></tr><tr><td>max_delay</td><td>num</td><td>5000</td><td></td></tr><tr><td>token</td><td>str</td><td>认证秘钥</td><td></td></tr><tr><td>host_list</td><td>array</td><td>信息流服务器节点列表</td><td></td></tr></tbody></table>
+        <p><code>host_list</code>数组中的对象：</p>
+        <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>host</td><td>str</td><td>服务器域名</td><td></td></tr><tr><td>port</td><td>num</td><td>tcp端口</td><td></td></tr><tr><td>wss_port</td><td>num</td><td>wss端口</td><td></td></tr><tr><td>ws_port</td><td>num</td><td>ws端口</td><td></td></tr></tbody></table>
+        """
+        headers = self.headers
+        url = f'https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id={roomid}'
+        response = requests.get(url, headers=headers).json()
+        return response
+
 
 class CsrfAuthenticationL:
     def __init__(self, cookie: str):
@@ -6928,7 +6930,7 @@ class Danmu:
     def get_websocket_client(self, roomid: int):
         global roomid_for_Danmu
         roomid_for_Danmu = roomid
-        danmu_info = getDanmuInfo(roomid)
+        danmu_info = master(self.cookie).getDanmuInfo(roomid)
         token = danmu_info['data']['token']
         host = danmu_info['data']['host_list'][-1]
         wss_url = f"wss://{host['host']}:{host['wss_port']}/sub"
@@ -7175,11 +7177,10 @@ def EnoughNumberOfFans_to_DynamicCongratulation(cookie: str, mid: int, FanThresh
             CsrfAuthenticationL(login_info["cookie"]).v2_reply_add(oid, f"{t}，有{fans_num}了！")
             break
 # print(login_info["cookie"])
+def danmu_s():
+    asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(1016).main())
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/58.0.3029.110 Safari/537.3',
-    'cookie': login_info["cookie"]
-}
-asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(1016).main())
+t1 = threading.Thread(target=danmu_s)
+t1.start()
+t1.join()
 
