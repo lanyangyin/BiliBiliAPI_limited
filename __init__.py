@@ -5361,6 +5361,17 @@ class master:
         response = requests.get(url, headers=headers).json()
         return response
 
+    def getRoomNews(self):
+        # 获取直播公告
+        headers = self.headers
+        api = "https://api.live.bilibili.com/xlive/app-blink/v1/index/getRoomNews"
+        params = {
+            'room_id': self.getRoomHighlightState(),
+            'uid': cookie2dict(self.headers["cookie"])["DedeUserID"]
+        }
+        getRoomNews_ReturnValue = requests.post(api, headers=headers, params=params).json()
+        return getRoomNews_ReturnValue["data"]["content"]
+
 
 class CsrfAuthenticationL:
     def __init__(self, cookie: str):
