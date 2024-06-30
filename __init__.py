@@ -5511,6 +5511,43 @@ class CsrfAuthenticationL:
         v2_reply_add_ReturnValue = requests.post(api, headers=headers, params=params, data=data).json()
         return v2_reply_add_ReturnValue
 
+    def room_v1_Room_update(self, title:str):
+        """
+        更新直播标题
+        @return:
+        """
+        headers = self.headers
+        csrf = self.csrf
+        api = "https://api.live.bilibili.com/room/v1/Room/update"
+        data = {
+            'room_id': master(self.cookie).getRoomHighlightState(),
+            'title': title,
+            'csrf_token': csrf,
+            'csrf': csrf
+        }
+        room_v1_Room_update_ReturnValue = requests.post(api, headers=headers, data=data).json()
+        return room_v1_Room_update_ReturnValue
+
+
+    def updateRoomNews(self, content: str):
+        """
+        更新直播公告
+        @return:
+        """
+        headers = self.headers
+        csrf = self.csrf
+        api = "https://api.live.bilibili.com/xlive/app-blink/v1/index/updateRoomNews"
+        data = {
+            'room_id': master(self.cookie).getRoomHighlightState(),
+            'uid': self.cookies["DedeUserID"],
+            'content': content,
+            'csrf_token': csrf,
+            'csrf': csrf
+        }
+        updateRoomNews_ReturnValue = requests.post(api, headers=headers, data=data).json()
+        return updateRoomNews_ReturnValue
+
+
 
 class WbiSigna:
     def __init__(self, cookie: str):
@@ -7183,10 +7220,10 @@ class Danmu:
             await self.connect()
 
 
-login_info = asyncio.run(start_login(3546559824267399))
+login_info = asyncio.run(start_login(143474500))
 
 
-print(login_info)
+# print(login_info)
 # print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
 # pprint.pprint(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).GetEmoticons(203227))
@@ -7225,3 +7262,6 @@ def danmu_s():
 
 
 # print(live_user_v1_Master_info(143474500))
+
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).updateRoomNews("测试2"))
+# pprint.pprint(CsrfAuthenticationL(login_info["cookie"]).room_v1_Room_update("测试0.2"))
