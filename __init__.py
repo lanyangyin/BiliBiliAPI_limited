@@ -5528,7 +5528,6 @@ class CsrfAuthenticationL:
         room_v1_Room_update_ReturnValue = requests.post(api, headers=headers, data=data).json()
         return room_v1_Room_update_ReturnValue
 
-
     def updateRoomNews(self, content: str):
         """
         更新直播公告
