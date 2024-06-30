@@ -17,6 +17,7 @@ from functools import reduce
 from hashlib import md5
 from io import StringIO
 from urllib.parse import quote, unquote
+from pathlib import Path
 
 import qrcode
 import requests
@@ -31,17 +32,16 @@ class config_B:
     配置文件 config.json 的 查找 和 更新
     """
 
-    def __init__(self, uid: int, dirname: str = "Bili_config"):
+    def __init__(self, uid: int, filepath: str):
         """
         @param uid: 用户id
-        @param dirname: 配置文件 config.json 所在文件夹名
         """
         # 字符串化UID
         self.uid = str(uid)
         # 配置文件 config.json 路径
-        self.configpath = f'.\\{dirname}\\config.json'
-        if not os.path.exists(".\\" + dirname):
-            os.makedirs(dirname, exist_ok=True)
+        self.configpath = filepath
+        if not os.path.exists(filepath):
+            os.makedirs(filepath, exist_ok=True)
 
     def update(self, cookies: dict):
         """
@@ -88,6 +88,7 @@ class config_B:
             pass
         return cookies
 
+
 def split_of_num(seq, num):
     """
     每 n个字符 切分
@@ -98,7 +99,7 @@ def split_of_num(seq, num):
     @return:
     @rtype: list
     """
-    return [seq[i:i+num] for i in range(0, len(seq), num)]
+    return [seq[i:i + num] for i in range(0, len(seq), num)]
 
 
 def split_of_list(txt: str, str_list: list):
@@ -869,6 +870,43 @@ def v1_Room_get_info(room_id: int) -> dict:
     }
     v1_Room_info = requests.get(api, headers=headers, params=data).json()
     return v1_Room_info["data"]
+
+
+def live_user_v1_Master_info(uid: int):
+    """
+    <h2 id="获取主播信息" tabindex="-1"><a class="header-anchor" href="#获取主播信息" aria-hidden="true">#</a> 获取主播信息</h2>
+    <blockquote><p>https://api.live.bilibili.com/live_user/v1/Master/info</p></blockquote>
+    <p><em>请求方式：GET</em></p>
+    <p><strong>url参数：</strong></p>
+    <table><thead><tr><th>参数名</th><th>类型</th><th>内容</th><th>必要性</th><th>备注</th></tr></thead><tbody><tr><td>uid</td><td>num</td><td>目标用户mid</td><td>必要</td><td></td></tr></tbody></table>
+    <p><strong>json回复：</strong></p>
+    <p>根对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>code</td><td>num</td><td>返回值</td><td>0：成功<br>1：参数错误</td></tr><tr><td>msg</td><td>str</td><td>错误信息</td><td>默认为空</td></tr><tr><td>message</td><td>str</td><td>错误信息</td><td>默认为空</td></tr><tr><td>data</td><td>obj</td><td>信息本体</td><td></td></tr></tbody></table>
+    <p><code>data</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>info</td><td>obj</td><td>主播信息</td><td></td></tr><tr><td>exp</td><td>obj</td><td>经验等级</td><td></td></tr><tr><td>follower_num</td><td>num</td><td>主播粉丝数</td><td></td></tr><tr><td>room_id</td><td>num</td><td>直播间id（短号）</td><td></td></tr><tr><td>medal_name</td><td>str</td><td>粉丝勋章名</td><td></td></tr><tr><td>glory_count</td><td>num</td><td>主播荣誉数</td><td></td></tr><tr><td>pendant</td><td>str</td><td>直播间头像框url</td><td></td></tr><tr><td>link_group_num</td><td>num</td><td>0</td><td><strong>作用尚不明确</strong></td></tr><tr><td>room_news</td><td>obj</td><td>主播公告</td><td></td></tr></tbody></table>
+    <p><code>info</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>uid</td><td>num</td><td>主播mid</td><td></td></tr><tr><td>uname</td><td>str</td><td>主播用户名</td><td></td></tr><tr><td>face</td><td>str</td><td>主播头像url</td><td></td></tr><tr><td>official_verify</td><td>obj</td><td>认证信息</td><td></td></tr><tr><td>gender</td><td>num</td><td>主播性别</td><td>-1：保密<br>0：女<br>1：男</td></tr></tbody></table>
+    <p><code>info</code>中的<code>official_verify</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>type</td><td>num</td><td>主播认证类型</td><td>-1：无<br>0：个人认证<br>1：机构认证</td></tr><tr><td>desc</td><td>str</td><td>主播认证信息</td><td></td></tr></tbody></table>
+    <p><code>exp</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>master_level</td><td>obj</td><td>主播等级</td><td></td></tr></tbody></table>
+    <p><code>exp</code>中的<code>master_level</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>level</td><td>num</td><td>当前等级</td><td></td></tr><tr><td>color</td><td>num</td><td>等级框颜色</td><td></td></tr><tr><td>current</td><td>array</td><td>当前等级信息</td><td></td></tr><tr><td>next</td><td>array</td><td>下一等级信息</td><td></td></tr></tbody></table>
+    <p><code>master_level</code>中的<code>current</code>数组：</p>
+    <table><thead><tr><th>项</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>0</td><td>num</td><td>升级积分</td><td></td></tr><tr><td>1</td><td>num</td><td>总积分</td><td></td></tr></tbody></table>
+    <p><code>master_level</code>中的<code>next</code>数组：</p>
+    <table><thead><tr><th>项</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>0</td><td>num</td><td>升级积分</td><td></td></tr><tr><td>1</td><td>num</td><td>总积分</td><td></td></tr></tbody></table>
+    <p><code>room_news</code>对象：</p>
+    <table><thead><tr><th>字段</th><th>类型</th><th>内容</th><th>备注</th></tr></thead><tbody><tr><td>content</td><td>str</td><td>公告内容</td><td></td></tr><tr><td>ctime</td><td>str</td><td>公告时间</td><td></td></tr><tr><td>ctime_text</td><td>str</td><td>公告日期</td><td></td></tr></tbody></table>
+    @param uid:目标用户mid
+    @return:
+    """
+    api = "https://api.live.bilibili.com/live_user/v1/Master/info"
+    data = {
+        "uid": uid
+    }
+    live_user_v1_Master_info = requests.get(api, headers=headers, params=data).json()
+    return live_user_v1_Master_info
 
 
 # pprint.pprint(v1_Room_get_info(213))
@@ -6857,21 +6895,21 @@ class WbiSigna:
 # coding=utf-8
 
 
-async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
+async def start_login(uid: int = 0, filepath: str = Path("./Biliconfig") / "config.json"):
     """
     扫码登陆获得cookies
     :param uid: 登陆的账号的uid，为0时使用记录中默认的，会使用上一次正常登陆的账号作为默认
-    :param dirname: 文件保存目录
+    :param filepath: 文件路径
     :return: dict
     """
     # 获取uid对应的cookies
-    configb = config_B(uid=uid, dirname=dirname)
+    configb = config_B(uid=uid, filepath=filepath)
     cookies = configb.check()
     # 尝试使用存录的cookies登录
     islogin = master(dict2cookieformat(cookies)).interface_nav()["isLogin"]
     if islogin:
         # 记录到默认登录字段
-        configb = config_B(uid=0, dirname=dirname)
+        configb = config_B(uid=0, filepath=filepath)
         configb.update(cookies)
         return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
     else:  # cookies无法登录或者没有记录所填的uid
@@ -6915,10 +6953,10 @@ async def start_login(uid: int = 0, dirname: str = "Biliconfig"):
         # 获取登陆账号cookies中携带的uid
         uid = int(cookies['DedeUserID'])
         # 记录
-        configb = config_B(uid=uid, dirname=dirname)
+        configb = config_B(uid=uid, filepath=filepath)
         configb.update(cookies)
         # 记录到默认登录字段
-        configb = config_B(uid=0, dirname=dirname)
+        configb = config_B(uid=0, filepath=filepath)
         configb.update(cookies)
     return {'uid': int(cookies['DedeUserID']), 'cookies': cookies, 'cookie': dict2cookieformat(cookies)}
 
@@ -6968,7 +7006,7 @@ class Danmu:
         async def on_open(self, ws):
             print("Connected to server...")
             await ws.send(self.pack(self.auth_body, 7))
-            asyncio.create_task(self.send_heartbeat(ws)) # 这里不能加await
+            asyncio.create_task(self.send_heartbeat(ws))  # 这里不能加await
 
         async def send_heartbeat(self, ws):
             while True:
@@ -7003,7 +7041,8 @@ class Danmu:
 
             content = content_bytes.decode('utf-8')
             if opt_code == 8:  # AUTH_REPLY
-                print(f"尝试连接【{getRoomBaseInfo(roomid_for_Danmu)['by_room_ids'][str(roomid_for_Danmu)]['uname']}】的直播间")
+                print(
+                    f"尝试连接【{getRoomBaseInfo(roomid_for_Danmu)['by_room_ids'][str(roomid_for_Danmu)]['uname']}】的直播间")
                 print(f"身份验证回复: {content}\n")
             elif opt_code == 5:  # SEND_SMS_REPLY
                 if content not in self.saved_danmudata:
@@ -7125,7 +7164,7 @@ class Danmu:
                             if contentdata['batch_combo_send']['blind_gift']:
                                 contentdata_bcsb_g = contentdata['batch_combo_send']['blind_gift']
                                 tfo += f"\t【{contentdata_bcsb_g['original_gift_name']}】{contentdata_bcsb_g['gift_action']}"
-                                coin = f"{contentdata_bcsb_g['gift_tip_price']/1000}￥\t{(contentdata_bcsb_g['gift_tip_price']-contentdata['total_coin'])/1000}￥"
+                                coin = f"{contentdata_bcsb_g['gift_tip_price'] / 1000}￥\t{(contentdata_bcsb_g['gift_tip_price'] - contentdata['total_coin']) / 1000}￥"
                             else:
                                 coin = f"{contentdata['total_coin'] / 1000}￥"
                             tfo += f"{contentdata['num']}个《{contentdata['batch_combo_send']['gift_name']}》\t{coin}"
@@ -7144,12 +7183,10 @@ class Danmu:
             await self.connect()
 
 
-
-
 login_info = asyncio.run(start_login(3546559824267399))
 
 
-# print(login_info)
+print(login_info)
 # print(login_info["cookies"]==cookie2dict(login_info["cookie"]))
 # print(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).getRoomHighlightState())
 # pprint.pprint(master(dict2cookieformat(cookie2dict(login_info["cookie"]))).GetEmoticons(203227))
@@ -7176,11 +7213,15 @@ def EnoughNumberOfFans_to_DynamicCongratulation(cookie: str, mid: int, FanThresh
         if int(fans_num) >= FanThreshold:
             CsrfAuthenticationL(login_info["cookie"]).v2_reply_add(oid, f"{t}，有{fans_num}了！")
             break
+
+
 # print(login_info["cookie"])
 def danmu_s():
     asyncio.run(Danmu(login_info["cookie"]).get_websocket_client(1016).main())
 
-t1 = threading.Thread(target=danmu_s)
-t1.start()
-t1.join()
+# t1 = threading.Thread(target=danmu_s)
+# t1.start()
+# t1.join()
 
+
+# print(live_user_v1_Master_info(143474500))
